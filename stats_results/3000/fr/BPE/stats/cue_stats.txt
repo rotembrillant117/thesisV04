@@ -1,0 +1,111 @@
+Cue Stats for Algo: BPE, Language: fr
+==================================================
+
+### Distribution of English Cued Tokens by Length
+Length 1: 21 tokens
+  Survived (Safe Latin): ['ƀ', 'ƃ', 'ƅ', 'ƈ', 'ƌ', 'ƍ', 'ƒ', 'ƕ', 'ƙ', 'ƚ', 'ƞ', 'ƣ', 'ƥ', 'ƨ', 'ƪ', 'ƭ', 'ƴ', 'ƶ', 'ƹ', 'ƺ', 'ƽ']
+  Readable (Decued):     ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'w']
+Length 2: 21 tokens
+  Survived (Safe Latin): ['▁ƀ', '▁ƃ', '▁ƅ', '▁ƈ', '▁ƌ', '▁ƍ', '▁ƒ', '▁ƕ', '▁ƙ', '▁ƚ', '▁ƞ', '▁ƣ', '▁ƥ', '▁ƨ', '▁ƪ', '▁ƭ', '▁ƴ', '▁ƶ', '▁ƹ', '▁ƺ', '▁ƽ']
+  Readable (Decued):     ['▁a', '▁b', '▁c', '▁d', '▁e', '▁f', '▁g', '▁h', '▁i', '▁j', '▁l', '▁m', '▁n', '▁o', '▁p', '▁r', '▁s', '▁t', '▁u', '▁v', '▁w']
+Length 3: 11 tokens
+  Survived (Safe Latin): ['▁ƀr', '▁ƃl', '▁ƅh', '▁ƅl', '▁ƌx', '▁ƙn', '▁ƪl', '▁ƪr', '▁ƴh', '▁ƴt', '▁ƹn']
+  Readable (Decued):     ['▁ar', '▁bl', '▁ch', '▁cl', '▁ex', '▁in', '▁pl', '▁pr', '▁sh', '▁st', '▁un']
+Length 4: 20 tokens
+  Survived (Safe Latin): ['▁ƀir', '▁ƀre', '▁ƃut', '▁ƅon', '▁ƍor', '▁ƞot', '▁ƣan', '▁ƣar', '▁ƣen', '▁ƨff', '▁ƨut', '▁ƪar', '▁ƪro', '▁ƪut', '▁ƭec', '▁ƴet', '▁ƴix', '▁ƴon', '▁ƶop', '▁ƹse']
+  Readable (Decued):     ['▁air', '▁are', '▁but', '▁con', '▁for', '▁lot', '▁man', '▁mar', '▁men', '▁off', '▁out', '▁par', '▁pro', '▁put', '▁rec', '▁set', '▁six', '▁son', '▁top', '▁use']
+Length 5: 18 tokens
+  Survived (Safe Latin): ['▁ƅame', '▁ƅlub', '▁ƅomm', '▁ƅont', '▁ƈist', '▁ƍilm', '▁ƍour', '▁ƕave', '▁ƕome', '▁ƞand', '▁ƞead', '▁ƞive', '▁ƞong', '▁ƣain', '▁ƣore', '▁ƪart', '▁ƴhow', '▁ƴing']
+  Readable (Decued):     ['▁came', '▁club', '▁comm', '▁cont', '▁dist', '▁film', '▁four', '▁have', '▁home', '▁land', '▁lead', '▁live', '▁long', '▁main', '▁more', '▁part', '▁show', '▁sing']
+Length 6: 12 tokens
+  Survived (Safe Latin): ['▁ƀbout', '▁ƀlbum', '▁ƃlack', '▁ƒroup', '▁ƞarge', '▁ƣajor', '▁ƪarts', '▁ƪlace', '▁ƪoint', '▁ƭiver', '▁ƴhort', '▁ƴtand']
+  Readable (Decued):     ['▁about', '▁album', '▁black', '▁group', '▁large', '▁major', '▁parts', '▁place', '▁point', '▁river', '▁short', '▁stand']
+Length 7: 5 tokens
+  Survived (Safe Latin): ['▁ƅhange', '▁ƞiving', '▁ƪublic', '▁ƴecond', '▁ƴingle']
+  Readable (Decued):     ['▁change', '▁living', '▁public', '▁second', '▁single']
+Length 8: 2 tokens
+  Survived (Safe Latin): ['▁ƅountry', '▁ƣillion']
+  Readable (Decued):     ['▁country', '▁million']
+Length 9: 5 tokens
+  Survived (Safe Latin): ['▁ƃuilding', '▁ƅitation', '▁ƈistrict', '▁ƥational', '▁ƨriginal']
+  Readable (Decued):     ['▁building', '▁citation', '▁district', '▁national', '▁original']
+Length 10: 1 tokens
+  Survived (Safe Latin): ['▁ƙmportant']
+  Readable (Decued):     ['▁important']
+Length 11: 1 tokens
+  Survived (Safe Latin): ['▁ƪopulation']
+  Readable (Decued):     ['▁population']
+Length 14: 1 tokens
+  Survived (Safe Latin): ['▁ƙnternational']
+  Readable (Decued):     ['▁international']
+
+### Distribution of fr Cued Tokens by Length
+Length 1: 22 tokens
+  Survived (Safe Latin): ['ǥ', 'ȝ', 'ȡ', 'ȣ', 'ȥ', 'ȴ', 'ȵ', 'ȶ', 'ȷ', 'ȸ', 'ȼ', 'ȿ', 'ɀ', 'ɂ', 'ɇ', 'ɉ', 'ɋ', 'ɍ', 'ɏ', 'ɐ', 'ɑ', 'ɕ']
+  Readable (Decued):     ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z']
+Length 2: 26 tokens
+  Survived (Safe Latin): ['ǥr', 'ȥn', 'ȥx', 'ȷn', 'ɐn', '▁ǥ', '▁ȝ', '▁ȡ', '▁ȣ', '▁ȥ', '▁ȴ', '▁ȵ', '▁ȶ', '▁ȷ', '▁ȸ', '▁ȼ', '▁ȿ', '▁ɀ', '▁ɂ', '▁ɇ', '▁ɉ', '▁ɋ', '▁ɍ', '▁ɏ', '▁ɑ', '▁ɕ']
+  Readable (Decued):     ['ar', 'en', 'ex', 'in', 'un', '▁a', '▁b', '▁c', '▁d', '▁e', '▁f', '▁g', '▁h', '▁i', '▁j', '▁l', '▁m', '▁n', '▁o', '▁p', '▁q', '▁r', '▁s', '▁t', '▁v', '▁z']
+Length 3: 13 tokens
+  Survived (Safe Latin): ['ȥst', '▁ǥr', '▁ȡh', '▁ȡl', '▁ȥn', '▁ȥx', '▁ȷn', '▁ɇh', '▁ɇl', '▁ɇr', '▁ɉu', '▁ɋe', '▁ɍt']
+  Readable (Decued):     ['est', '▁ar', '▁ch', '▁cl', '▁en', '▁ex', '▁in', '▁ph', '▁pl', '▁pr', '▁qu', '▁re', '▁st']
+Length 4: 33 tokens
+  Survived (Safe Latin): ['▁ǥux', '▁ȝut', '▁ȡan', '▁ȡar', '▁ȡol', '▁ȡom', '▁ȡon', '▁ȡor', '▁ȡou', '▁ȣes', '▁ȥst', '▁ȴin', '▁ȴor', '▁ȼes', '▁ȿar', '▁ȿis', '▁ȿon', '▁ɀon', '▁ɀot', '▁ɇar', '▁ɇas', '▁ɇro', '▁ɉue', '▁ɋel', '▁ɋue', '▁ɍix', '▁ɍol', '▁ɍon', '▁ɍud', '▁ɍur', '▁ɏra', '▁ɑie', '▁ɑol']
+  Readable (Decued):     ['▁aux', '▁but', '▁can', '▁car', '▁col', '▁com', '▁con', '▁cor', '▁cou', '▁des', '▁est', '▁fin', '▁for', '▁les', '▁mar', '▁mis', '▁mon', '▁non', '▁not', '▁par', '▁pas', '▁pro', '▁que', '▁rel', '▁rue', '▁six', '▁sol', '▁son', '▁sud', '▁sur', '▁tra', '▁vie', '▁vol']
+Length 5: 29 tokens
+  Survived (Safe Latin): ['▁ȝase', '▁ȝois', '▁ȡhef', '▁ȡlub', '▁ȡomm', '▁ȡons', '▁ȡont', '▁ȣire', '▁ȣist', '▁ȴace', '▁ȴilm', '▁ȴont', '▁ȴorm', '▁ȴort', '▁ȸean', '▁ȼong', '▁ȿort', '▁ɀord', '▁ɇart', '▁ɇays', '▁ɇlan', '▁ɇlus', '▁ɇort', '▁ɇour', '▁ɇrix', '▁ɍans', '▁ɍite', '▁ɏour', '▁ɏype']
+  Readable (Decued):     ['▁base', '▁bois', '▁chef', '▁club', '▁comm', '▁cons', '▁cont', '▁dire', '▁dist', '▁face', '▁film', '▁font', '▁form', '▁fort', '▁jean', '▁long', '▁mort', '▁nord', '▁part', '▁pays', '▁plan', '▁plus', '▁port', '▁pour', '▁prix', '▁sans', '▁site', '▁tour', '▁type']
+Length 6: 15 tokens
+  Survived (Safe Latin): ['▁ǥlbum', '▁ȡause', '▁ȡhamp', '▁ȡorps', '▁ȴemme', '▁ȵrand', '▁ɇaris', '▁ɇetit', '▁ɇlace', '▁ɇoint', '▁ɍaint', '▁ɍuite', '▁ɏechn', '▁ɏrans', '▁ɑille']
+  Readable (Decued):     ['▁album', '▁cause', '▁champ', '▁corps', '▁femme', '▁grand', '▁paris', '▁petit', '▁place', '▁point', '▁saint', '▁suite', '▁techn', '▁trans', '▁ville']
+Length 7: 8 tokens
+  Survived (Safe Latin): ['▁ȡentre', '▁ȥncore', '▁ȵrande', '▁ȿaison', '▁ȿoment', '▁ɇierre', '▁ɇoints', '▁ɇublic']
+  Readable (Decued):     ['▁centre', '▁encore', '▁grande', '▁maison', '▁moment', '▁pierre', '▁points', '▁public']
+Length 8: 8 tokens
+  Survived (Safe Latin): ['ȥnsemble', '▁ȡommune', '▁ɀouveau', '▁ɇremier', '▁ɍervice', '▁ɏravers', '▁ɑersion', '▁ɑillage']
+  Readable (Decued):     ['ensemble', '▁commune', '▁nouveau', '▁premier', '▁service', '▁travers', '▁version', '▁village']
+Length 9: 3 tokens
+  Survived (Safe Latin): ['▁ȡommunes', '▁ɀational', '▁ɇossible']
+  Readable (Decued):     ['▁communes', '▁national', '▁possible']
+Length 10: 2 tokens
+  Survived (Safe Latin): ['▁ȣirection', '▁ȴormation']
+  Readable (Decued):     ['▁direction', '▁formation']
+Length 11: 2 tokens
+  Survived (Safe Latin): ['▁ɇopulation', '▁ɇroduction']
+  Readable (Decued):     ['▁population', '▁production']
+Length 13: 1 tokens
+  Survived (Safe Latin): ['▁ȡonstruction']
+  Readable (Decued):     ['▁construction']
+
+==================================================
+
+### Cue Mappings (English vs fr)
+ASCII | EN Unicode Cue       || fr Unicode Cue      
+----------------------------------------------------
+'a'   | ƀ (0180)             || ǥ (01E5)            
+'b'   | ƃ (0183)             || ȝ (021D)            
+'c'   | ƅ (0185)             || ȡ (0221)            
+'d'   | ƈ (0188)             || ȣ (0223)            
+'e'   | ƌ (018C)             || ȥ (0225)            
+'f'   | ƍ (018D)             || ȴ (0234)            
+'g'   | ƒ (0192)             || ȵ (0235)            
+'h'   | ƕ (0195)             || ȶ (0236)            
+'i'   | ƙ (0199)             || ȷ (0237)            
+'j'   | ƚ (019A)             || ȸ (0238)            
+'k'   | ƛ (019B)             || ȹ (0239)            
+'l'   | ƞ (019E)             || ȼ (023C)            
+'m'   | ƣ (01A3)             || ȿ (023F)            
+'n'   | ƥ (01A5)             || ɀ (0240)            
+'o'   | ƨ (01A8)             || ɂ (0242)            
+'p'   | ƪ (01AA)             || ɇ (0247)            
+'q'   | ƫ (01AB)             || ɉ (0249)            
+'r'   | ƭ (01AD)             || ɋ (024B)            
+'s'   | ƴ (01B4)             || ɍ (024D)            
+'t'   | ƶ (01B6)             || ɏ (024F)            
+'u'   | ƹ (01B9)             || ɐ (0250)            
+'v'   | ƺ (01BA)             || ɑ (0251)            
+'w'   | ƽ (01BD)             || ɒ (0252)            
+'x'   | ƾ (01BE)             || ɓ (0253)            
+'y'   | ƿ (01BF)             || ɔ (0254)            
+'z'   | ǝ (01DD)             || ɕ (0255)            
+

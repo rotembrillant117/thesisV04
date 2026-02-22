@@ -1,0 +1,120 @@
+Cue Stats for Algo: BPE_SAGE, Language: fr
+==================================================
+
+### Distribution of English Cued Tokens by Length
+Length 2: 1 tokens
+  Survived (Safe Latin): ['▁ƙ']
+  Readable (Decued):     ['▁i']
+Length 3: 1 tokens
+  Survived (Safe Latin): ['▁ƙn']
+  Readable (Decued):     ['▁in']
+Length 4: 20 tokens
+  Survived (Safe Latin): ['▁ƀir', '▁ƀre', '▁ƃoy', '▁ƃus', '▁ƃut', '▁ƅar', '▁ƅor', '▁ƍar', '▁ƍor', '▁ƚob', '▁ƣan', '▁ƣen', '▁ƨff', '▁ƨut', '▁ƪro', '▁ƪut', '▁ƴet', '▁ƴix', '▁ƶop', '▁ƹse']
+  Readable (Decued):     ['▁air', '▁are', '▁boy', '▁bus', '▁but', '▁car', '▁cor', '▁far', '▁for', '▁job', '▁man', '▁men', '▁off', '▁out', '▁pro', '▁put', '▁set', '▁six', '▁top', '▁use']
+Length 5: 39 tokens
+  Survived (Safe Latin): ['▁ƃase', '▁ƅame', '▁ƅase', '▁ƅlub', '▁ƅode', '▁ƅomm', '▁ƅons', '▁ƈata', '▁ƍace', '▁ƍilm', '▁ƍour', '▁ƍull', '▁ƒirl', '▁ƕave', '▁ƕome', '▁ƞand', '▁ƞegs', '▁ƞive', '▁ƞong', '▁ƞook', '▁ƞord', '▁ƞove', '▁ƣain', '▁ƣore', '▁ƨnce', '▁ƨpen', '▁ƪage', '▁ƪart', '▁ƪlan', '▁ƪort', '▁ƴent', '▁ƴhow', '▁ƴite', '▁ƴons', '▁ƴtar', '▁ƴtop', '▁ƶest', '▁ƶype', '▁ƺote']
+  Readable (Decued):     ['▁base', '▁came', '▁case', '▁club', '▁code', '▁comm', '▁cons', '▁data', '▁face', '▁film', '▁four', '▁full', '▁girl', '▁have', '▁home', '▁land', '▁legs', '▁live', '▁long', '▁look', '▁lord', '▁love', '▁main', '▁more', '▁once', '▁open', '▁page', '▁part', '▁plan', '▁port', '▁sent', '▁show', '▁site', '▁sons', '▁star', '▁stop', '▁test', '▁type', '▁vote']
+Length 6: 48 tokens
+  Survived (Safe Latin): ['▁ƀbout', '▁ƃasic', '▁ƃlack', '▁ƃreak', '▁ƅause', '▁ƅhina', '▁ƅivil', '▁ƅlose', '▁ƅourt', '▁ƅrash', '▁ƅrime', '▁ƅross', '▁ƈrive', '▁ƍinal', '▁ƍorce', '▁ƍront', '▁ƍruit', '▁ƒrand', '▁ƒreen', '▁ƒroup', '▁ƙssue', '▁ƞabel', '▁ƞarge', '▁ƞatin', '▁ƞives', '▁ƞocal', '▁ƞouis', '▁ƣajor', '▁ƣatch', '▁ƪaris', '▁ƪarts', '▁ƪoint', '▁ƪrime', '▁ƭadio', '▁ƭiver', '▁ƭound', '▁ƭoute', '▁ƭoyal', '▁ƴhort', '▁ƴhows', '▁ƴtaff', '▁ƴtage', '▁ƴtand', '▁ƴtore', '▁ƴtyle', '▁ƶrans', '▁ƶypes', '▁ƹnion']
+  Readable (Decued):     ['▁about', '▁basic', '▁black', '▁break', '▁cause', '▁china', '▁civil', '▁close', '▁court', '▁crash', '▁crime', '▁cross', '▁drive', '▁final', '▁force', '▁front', '▁fruit', '▁grand', '▁green', '▁group', '▁issue', '▁label', '▁large', '▁latin', '▁lives', '▁local', '▁louis', '▁major', '▁match', '▁paris', '▁parts', '▁point', '▁prime', '▁radio', '▁river', '▁round', '▁route', '▁royal', '▁short', '▁shows', '▁staff', '▁stage', '▁stand', '▁store', '▁style', '▁trans', '▁types', '▁union']
+Length 7: 41 tokens
+  Survived (Safe Latin): ['▁ƀctive', '▁ƀnimal', '▁ƃridge', '▁ƅentre', '▁ƅhange', '▁ƅopies', '▁ƅouple', '▁ƈesign', '▁ƈouble', '▁ƌmpire', '▁ƍorces', '▁ƍormer', '▁ƍuture', '▁ƒlobal', '▁ƒolden', '▁ƕockey', '▁ƞiving', '▁ƥation', '▁ƥative', '▁ƥature', '▁ƥormal', '▁ƨffice', '▁ƪlaces', '▁ƪolice', '▁ƪrince', '▁ƪrison', '▁ƪublic', '▁ƭecord', '▁ƭeport', '▁ƴecond', '▁ƴecret', '▁ƴenior', '▁ƴimple', '▁ƴinger', '▁ƴingle', '▁ƴocial', '▁ƴource', '▁ƴports', '▁ƴquare', '▁ƴtudio', '▁ƶemple']
+  Readable (Decued):     ['▁active', '▁animal', '▁bridge', '▁centre', '▁change', '▁copies', '▁couple', '▁design', '▁double', '▁empire', '▁forces', '▁former', '▁future', '▁global', '▁golden', '▁hockey', '▁living', '▁nation', '▁native', '▁nature', '▁normal', '▁office', '▁places', '▁police', '▁prince', '▁prison', '▁public', '▁record', '▁report', '▁second', '▁secret', '▁senior', '▁simple', '▁singer', '▁single', '▁social', '▁source', '▁sports', '▁square', '▁studio', '▁temple']
+Length 8: 31 tokens
+  Survived (Safe Latin): ['▁ƀrticle', '▁ƅapital', '▁ƅentral', '▁ƅertain', '▁ƅlasses', '▁ƅoncept', '▁ƅoncert', '▁ƅountry', '▁ƅulture', '▁ƈigital', '▁ƌxpress', '▁ƚournal', '▁ƚustice', '▁ƞeaders', '▁ƣachine', '▁ƣeeting', '▁ƣessage', '▁ƣillion', '▁ƣinutes', '▁ƣusical', '▁ƪarents', '▁ƪatient', '▁ƴcience', '▁ƴection', '▁ƴervice', '▁ƴtation', '▁ƴupport', '▁ƴurface', '▁ƺersion', '▁ƺillage', '▁ƽestern']
+  Readable (Decued):     ['▁article', '▁capital', '▁central', '▁certain', '▁classes', '▁concept', '▁concert', '▁country', '▁culture', '▁digital', '▁express', '▁journal', '▁justice', '▁leaders', '▁machine', '▁meeting', '▁message', '▁million', '▁minutes', '▁musical', '▁parents', '▁patient', '▁science', '▁section', '▁service', '▁station', '▁support', '▁surface', '▁version', '▁village', '▁western']
+Length 9: 26 tokens
+  Survived (Safe Latin): ['▁ƀccident', '▁ƀddition', '▁ƀlliance', '▁ƀudience', '▁ƃuilding', '▁ƃusiness', '▁ƅhampion', '▁ƅitation', '▁ƅomposer', '▁ƅontinue', '▁ƈistance', '▁ƈistrict', '▁ƈivision', '▁ƍestival', '▁ƍootball', '▁ƞocation', '▁ƣagazine', '▁ƣultiple', '▁ƥational', '▁ƨriginal', '▁ƪosition', '▁ƪositive', '▁ƪossible', '▁ƪrovince', '▁ƭeligion', '▁ƴoftware']
+  Readable (Decued):     ['▁accident', '▁addition', '▁alliance', '▁audience', '▁building', '▁business', '▁champion', '▁citation', '▁composer', '▁continue', '▁distance', '▁district', '▁division', '▁festival', '▁football', '▁location', '▁magazine', '▁multiple', '▁national', '▁original', '▁position', '▁positive', '▁possible', '▁province', '▁religion', '▁software']
+Length 10: 8 tokens
+  Survived (Safe Latin): ['▁ƀttention', '▁ƙmportant', '▁ƙnfluence', '▁ƨrchestra', '▁ƴituation', '▁ƴtructure', '▁ƴubstance', '▁ƶradition']
+  Readable (Decued):     ['▁attention', '▁important', '▁influence', '▁orchestra', '▁situation', '▁structure', '▁substance', '▁tradition']
+Length 11: 5 tokens
+  Survived (Safe Latin): ['▁ƅollection', '▁ƅommercial', '▁ƅonvention', '▁ƪopulation', '▁ƪroduction']
+  Readable (Decued):     ['▁collection', '▁commercial', '▁convention', '▁population', '▁production']
+Length 12: 7 tokens
+  Survived (Safe Latin): ['▁ƀlternative', '▁ƀpplication', '▁ƀssociation', '▁ƌngineering', '▁ƙnformation', '▁ƪerformance', '▁ƹnderground']
+  Readable (Decued):     ['▁alternative', '▁application', '▁association', '▁engineering', '▁information', '▁performance', '▁underground']
+Length 13: 3 tokens
+  Survived (Safe Latin): ['▁ƀrchitecture', '▁ƅonstitution', '▁ƅonstruction']
+  Readable (Decued):     ['▁architecture', '▁constitution', '▁construction']
+Length 14: 2 tokens
+  Survived (Safe Latin): ['▁ƅommunication', '▁ƙnternational']
+  Readable (Decued):     ['▁communication', '▁international']
+Length 15: 1 tokens
+  Survived (Safe Latin): ['▁ƀdministrative']
+  Readable (Decued):     ['▁administrative']
+
+### Distribution of fr Cued Tokens by Length
+Length 3: 2 tokens
+  Survived (Safe Latin): ['ȥst', '▁ǥr']
+  Readable (Decued):     ['est', '▁ar']
+Length 4: 25 tokens
+  Survived (Safe Latin): ['▁ǥir', '▁ǥmi', '▁ǥux', '▁ȝar', '▁ȝon', '▁ȝut', '▁ȡar', '▁ȣes', '▁ȣuc', '▁ȥst', '▁ȴin', '▁ȼes', '▁ȿal', '▁ȿis', '▁ɀon', '▁ɇar', '▁ɇas', '▁ɇro', '▁ɉue', '▁ɍix', '▁ɍon', '▁ɍud', '▁ɍup', '▁ɍur', '▁ɑie']
+  Readable (Decued):     ['▁air', '▁ami', '▁aux', '▁bar', '▁bon', '▁but', '▁car', '▁des', '▁duc', '▁est', '▁fin', '▁les', '▁mal', '▁mis', '▁non', '▁par', '▁pas', '▁pro', '▁que', '▁six', '▁son', '▁sud', '▁sup', '▁sur', '▁vie']
+Length 5: 45 tokens
+  Survived (Safe Latin): ['ǥlbum', 'ǥvril', 'ȷmage', 'ȷssue', 'ɐsage', '▁ȝase', '▁ȝois', '▁ȝout', '▁ȡamp', '▁ȡlub', '▁ȡomp', '▁ȡonc', '▁ȡonf', '▁ȡons', '▁ȡonv', '▁ȡoup', '▁ȴace', '▁ȴilm', '▁ȴond', '▁ȴont', '▁ȴort', '▁ȸean', '▁ȼong', '▁ȿain', '▁ȿars', '▁ȿode', '▁ȿort', '▁ɀoir', '▁ɀord', '▁ɀote', '▁ɇart', '▁ɇays', '▁ɇlan', '▁ɇlus', '▁ɇont', '▁ɇort', '▁ɇour', '▁ɇrix', '▁ɍite', '▁ɍort', '▁ɍuit', '▁ɏour', '▁ɏype', '▁ɑote', '▁ɕone']
+  Readable (Decued):     ['album', 'avril', 'image', 'issue', 'usage', '▁base', '▁bois', '▁bout', '▁camp', '▁club', '▁comp', '▁conc', '▁conf', '▁cons', '▁conv', '▁coup', '▁face', '▁film', '▁fond', '▁font', '▁fort', '▁jean', '▁long', '▁main', '▁mars', '▁mode', '▁mort', '▁noir', '▁nord', '▁note', '▁part', '▁pays', '▁plan', '▁plus', '▁pont', '▁port', '▁pour', '▁prix', '▁site', '▁sort', '▁suit', '▁tour', '▁type', '▁vote', '▁zone']
+Length 6: 35 tokens
+  Survived (Safe Latin): ['▁ǥlbum', '▁ȡause', '▁ȡhamp', '▁ȡivil', '▁ȡomte', '▁ȡorps', '▁ȡourt', '▁ȡrime', '▁ȡycle', '▁ȴemme', '▁ȴorce', '▁ȵenre', '▁ȵrand', '▁ȼarge', '▁ȿarie', '▁ȿatch', '▁ȿotif', '▁ɀotre', '▁ɇaris', '▁ɇetit', '▁ɇhoto', '▁ɇlace', '▁ɋevue', '▁ɋoman', '▁ɋouge', '▁ɋoute', '▁ɍalle', '▁ɍcore', '▁ɍport', '▁ɍtyle', '▁ɍuite', '▁ɏotal', '▁ɏrace', '▁ɏrans', '▁ɑille']
+  Readable (Decued):     ['▁album', '▁cause', '▁champ', '▁civil', '▁comte', '▁corps', '▁court', '▁crime', '▁cycle', '▁femme', '▁force', '▁genre', '▁grand', '▁large', '▁marie', '▁match', '▁motif', '▁notre', '▁paris', '▁petit', '▁photo', '▁place', '▁revue', '▁roman', '▁rouge', '▁route', '▁salle', '▁score', '▁sport', '▁style', '▁suite', '▁total', '▁trace', '▁trans', '▁ville']
+Length 7: 48 tokens
+  Survived (Safe Latin): ['ǥbsence', '▁ǥccord', '▁ǥction', '▁ǥrrive', '▁ȝudget', '▁ȡanton', '▁ȡentre', '▁ȡharge', '▁ȡombat', '▁ȡourse', '▁ȣivers', '▁ȣouble', '▁ȥncore', '▁ȴigure', '▁ȴinale', '▁ȴormer', '▁ȴruits', '▁ȵrande', '▁ȵrands', '▁ȵrille', '▁ȿaison', '▁ȿinute', '▁ȿoment', '▁ȿoulin', '▁ɀature', '▁ɀotion', '▁ɇierre', '▁ɇointe', '▁ɇoints', '▁ɇolice', '▁ɇrince', '▁ɇrison', '▁ɇublic', '▁ɋecord', '▁ɋefuse', '▁ɍculpt', '▁ɍecond', '▁ɍecret', '▁ɍimple', '▁ɍocial', '▁ɍource', '▁ɍtatue', '▁ɍtudio', '▁ɏalent', '▁ɏemple', '▁ɐnique', '▁ɑolume', '▁ɑoyage']
+  Readable (Decued):     ['absence', '▁accord', '▁action', '▁arrive', '▁budget', '▁canton', '▁centre', '▁charge', '▁combat', '▁course', '▁divers', '▁double', '▁encore', '▁figure', '▁finale', '▁former', '▁fruits', '▁grande', '▁grands', '▁grille', '▁maison', '▁minute', '▁moment', '▁moulin', '▁nature', '▁notion', '▁pierre', '▁pointe', '▁points', '▁police', '▁prince', '▁prison', '▁public', '▁record', '▁refuse', '▁sculpt', '▁second', '▁secret', '▁simple', '▁social', '▁source', '▁statue', '▁studio', '▁talent', '▁temple', '▁unique', '▁volume', '▁voyage']
+Length 8: 35 tokens
+  Survived (Safe Latin): ['ǥlliance', 'ǥltitude', 'ȥnsemble', 'ɂccasion', '▁ǥrticle', '▁ȝlanche', '▁ȡentral', '▁ȡertain', '▁ȡircuit', '▁ȡlasses', '▁ȡommune', '▁ȡoncept', '▁ȡontact', '▁ȣollars', '▁ȸournal', '▁ȸustice', '▁ȿachine', '▁ȿaximum', '▁ȿessage', '▁ȿission', '▁ɀouveau', '▁ɇarents', '▁ɇarties', '▁ɇassage', '▁ɇatient', '▁ɇremier', '▁ɇropose', '▁ɋeprise', '▁ɍcience', '▁ɍection', '▁ɍervice', '▁ɏerrain', '▁ɏravers', '▁ɑersion', '▁ɑillage']
+  Readable (Decued):     ['alliance', 'altitude', 'ensemble', 'occasion', '▁article', '▁blanche', '▁central', '▁certain', '▁circuit', '▁classes', '▁commune', '▁concept', '▁contact', '▁dollars', '▁journal', '▁justice', '▁machine', '▁maximum', '▁message', '▁mission', '▁nouveau', '▁parents', '▁parties', '▁passage', '▁patient', '▁premier', '▁propose', '▁reprise', '▁science', '▁section', '▁service', '▁terrain', '▁travers', '▁version', '▁village']
+Length 9: 25 tokens
+  Survived (Safe Latin): ['ǥttention', 'ȥxception', 'ȥxistence', '▁ȡommerce', '▁ȡommunes', '▁ȡontinue', '▁ȡritique', '▁ȣistrict', '▁ȣivision', '▁ȥnsemble', '▁ȴestival', '▁ȴootball', '▁ȷnternet', '▁ȿagazine', '▁ȿillions', '▁ȿonument', '▁ɀational', '▁ɂrganise', '▁ɇosition', '▁ɇrovince', '▁ɉuestion', '▁ɋelation', '▁ɋeligion', '▁ɍervices', '▁ɏribunal']
+  Readable (Decued):     ['attention', 'exception', 'existence', '▁commerce', '▁communes', '▁continue', '▁critique', '▁district', '▁division', '▁ensemble', '▁festival', '▁football', '▁internet', '▁magazine', '▁millions', '▁monument', '▁national', '▁organise', '▁position', '▁province', '▁question', '▁relation', '▁religion', '▁services', '▁tribunal']
+Length 10: 22 tokens
+  Survived (Safe Latin): ['ȷmportance', 'ɂccupation', 'ɂpposition', '▁ȡondition', '▁ȡontinent', '▁ȣiffusion', '▁ȣimension', '▁ȣirection', '▁ȣocuments', '▁ȴormation', '▁ȷmportant', '▁ȷnfluence', '▁ɇersonnel', '▁ɇrincipal', '▁ɇrogramme', '▁ɍatellite', '▁ɍignature', '▁ɍituation', '▁ɍpectacle', '▁ɍtructure', '▁ɏradition', '▁ɏransport']
+  Readable (Decued):     ['importance', 'occupation', 'opposition', '▁condition', '▁continent', '▁diffusion', '▁dimension', '▁direction', '▁documents', '▁formation', '▁important', '▁influence', '▁personnel', '▁principal', '▁programme', '▁satellite', '▁signature', '▁situation', '▁spectacle', '▁structure', '▁tradition', '▁transport']
+Length 11: 14 tokens
+  Survived (Safe Latin): ['ǥgriculture', 'ǥpplication', 'ǥssociation', '▁ȡollection', '▁ȡommandant', '▁ȡommercial', '▁ȡommission', '▁ȡorrespond', '▁ȣiscipline', '▁ɇopulation', '▁ɇroduction', '▁ɇrotection', '▁ɍuccession', '▁ɏechniques']
+  Readable (Decued):     ['agriculture', 'application', 'association', '▁collection', '▁commandant', '▁commercial', '▁commission', '▁correspond', '▁discipline', '▁population', '▁production', '▁protection', '▁succession', '▁techniques']
+Length 12: 8 tokens
+  Survived (Safe Latin): ['ǥrchitecture', 'ȥxploitation', 'ɂrganisation', '▁ȡirculation', '▁ȡomposition', '▁ȣescription', '▁ɇerformance', '▁ɇerspective']
+  Readable (Decued):     ['architecture', 'exploitation', 'organisation', '▁circulation', '▁composition', '▁description', '▁performance', '▁perspective']
+Length 13: 3 tokens
+  Survived (Safe Latin): ['▁ȡonstruction', '▁ȣistribution', '▁ȿodification']
+  Readable (Decued):     ['▁construction', '▁distribution', '▁modification']
+Length 14: 4 tokens
+  Survived (Safe Latin): ['▁ȡollaboration', '▁ȡommunication', '▁ȷnternational', '▁ɇarticipation']
+  Readable (Decued):     ['▁collaboration', '▁communication', '▁international', '▁participation']
+Length 15: 1 tokens
+  Survived (Safe Latin): ['▁ɋeconnaissance']
+  Readable (Decued):     ['▁reconnaissance']
+
+==================================================
+
+### Cue Mappings (English vs fr)
+ASCII | EN Unicode Cue       || fr Unicode Cue      
+----------------------------------------------------
+'a'   | ƀ (0180)             || ǥ (01E5)            
+'b'   | ƃ (0183)             || ȝ (021D)            
+'c'   | ƅ (0185)             || ȡ (0221)            
+'d'   | ƈ (0188)             || ȣ (0223)            
+'e'   | ƌ (018C)             || ȥ (0225)            
+'f'   | ƍ (018D)             || ȴ (0234)            
+'g'   | ƒ (0192)             || ȵ (0235)            
+'h'   | ƕ (0195)             || ȶ (0236)            
+'i'   | ƙ (0199)             || ȷ (0237)            
+'j'   | ƚ (019A)             || ȸ (0238)            
+'k'   | ƛ (019B)             || ȹ (0239)            
+'l'   | ƞ (019E)             || ȼ (023C)            
+'m'   | ƣ (01A3)             || ȿ (023F)            
+'n'   | ƥ (01A5)             || ɀ (0240)            
+'o'   | ƨ (01A8)             || ɂ (0242)            
+'p'   | ƪ (01AA)             || ɇ (0247)            
+'q'   | ƫ (01AB)             || ɉ (0249)            
+'r'   | ƭ (01AD)             || ɋ (024B)            
+'s'   | ƴ (01B4)             || ɍ (024D)            
+'t'   | ƶ (01B6)             || ɏ (024F)            
+'u'   | ƹ (01B9)             || ɐ (0250)            
+'v'   | ƺ (01BA)             || ɑ (0251)            
+'w'   | ƽ (01BD)             || ɒ (0252)            
+'x'   | ƾ (01BE)             || ɓ (0253)            
+'y'   | ƿ (01BF)             || ɔ (0254)            
+'z'   | ǝ (01DD)             || ɕ (0255)            
+

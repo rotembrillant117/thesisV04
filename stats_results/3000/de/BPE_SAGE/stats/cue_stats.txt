@@ -1,0 +1,108 @@
+Cue Stats for Algo: BPE_SAGE, Language: de
+==================================================
+
+### Distribution of English Cued Tokens by Length
+Length 2: 23 tokens
+  Survived (Safe Latin): ['▁ƀ', '▁ƃ', '▁ƅ', '▁ƈ', '▁ƌ', '▁ƍ', '▁ƒ', '▁ƕ', '▁ƙ', '▁ƚ', '▁ƛ', '▁ƞ', '▁ƣ', '▁ƥ', '▁ƨ', '▁ƪ', '▁ƫ', '▁ƭ', '▁ƴ', '▁ƶ', '▁ƹ', '▁ƺ', '▁ƽ']
+  Readable (Decued):     ['▁a', '▁b', '▁c', '▁d', '▁e', '▁f', '▁g', '▁h', '▁i', '▁j', '▁k', '▁l', '▁m', '▁n', '▁o', '▁p', '▁q', '▁r', '▁s', '▁t', '▁u', '▁v', '▁w']
+Length 3: 5 tokens
+  Survived (Safe Latin): ['▁ƀl', '▁ƀn', '▁ƌl', '▁ƌx', '▁ƨr']
+  Readable (Decued):     ['▁al', '▁an', '▁el', '▁ex', '▁or']
+Length 4: 20 tokens
+  Survived (Safe Latin): ['ƃorn', '▁ƀir', '▁ƀll', '▁ƀrt', '▁ƃad', '▁ƃar', '▁ƅut', '▁ƌnd', '▁ƕer', '▁ƚob', '▁ƞot', '▁ƣar', '▁ƣay', '▁ƥot', '▁ƨff', '▁ƨut', '▁ƭun', '▁ƽar', '▁ƽas', '▁ƽho']
+  Readable (Decued):     ['born', '▁air', '▁all', '▁art', '▁bad', '▁bar', '▁cut', '▁end', '▁her', '▁job', '▁lot', '▁mar', '▁may', '▁not', '▁off', '▁out', '▁run', '▁war', '▁was', '▁who']
+Length 5: 48 tokens
+  Survived (Safe Latin): ['▁ƀlso', '▁ƀrmy', '▁ƃack', '▁ƃand', '▁ƃank', '▁ƃorn', '▁ƅamp', '▁ƅlub', '▁ƅomp', '▁ƌast', '▁ƍall', '▁ƍilm', '▁ƍorm', '▁ƍull', '▁ƕalf', '▁ƕand', '▁ƕeld', '▁ƕigh', '▁ƕome', '▁ƚohn', '▁ƛind', '▁ƞake', '▁ƞast', '▁ƞike', '▁ƞive', '▁ƣade', '▁ƣain', '▁ƣale', '▁ƥame', '▁ƨver', '▁ƪark', '▁ƪaul', '▁ƪlan', '▁ƪlay', '▁ƪort', '▁ƭeal', '▁ƴhow', '▁ƴong', '▁ƴtan', '▁ƴtud', '▁ƶeam', '▁ƶell', '▁ƶime', '▁ƶype', '▁ƽest', '▁ƽill', '▁ƽord', '▁ƿork']
+  Readable (Decued):     ['▁also', '▁army', '▁back', '▁band', '▁bank', '▁born', '▁camp', '▁club', '▁comp', '▁east', '▁fall', '▁film', '▁form', '▁full', '▁half', '▁hand', '▁held', '▁high', '▁home', '▁john', '▁kind', '▁lake', '▁last', '▁like', '▁live', '▁made', '▁main', '▁male', '▁name', '▁over', '▁park', '▁paul', '▁plan', '▁play', '▁port', '▁real', '▁show', '▁song', '▁stan', '▁stud', '▁team', '▁tell', '▁time', '▁type', '▁west', '▁will', '▁word', '▁york']
+Length 6: 39 tokens
+  Survived (Safe Latin): ['▁ƀfter', '▁ƀpril', '▁ƃreak', '▁ƅivil', '▁ƌarth', '▁ƍight', '▁ƍorce', '▁ƍront', '▁ƒames', '▁ƒroup', '▁ƕeavy', '▁ƕenry', '▁ƕuman', '▁ƙnter', '▁ƚapan', '▁ƛorea', '▁ƞevel', '▁ƞight', '▁ƣajor', '▁ƣodel', '▁ƣovie', '▁ƥorth', '▁ƪarty', '▁ƭange', '▁ƭoman', '▁ƭoyal', '▁ƴpace', '▁ƴtage', '▁ƴtars', '▁ƴtart', '▁ƴtill', '▁ƴtorm', '▁ƴtory', '▁ƶhese', '▁ƶimes', '▁ƶotal', '▁ƹnion', '▁ƽorld', '▁ƿoung']
+  Readable (Decued):     ['▁after', '▁april', '▁break', '▁civil', '▁earth', '▁fight', '▁force', '▁front', '▁games', '▁group', '▁heavy', '▁henry', '▁human', '▁inter', '▁japan', '▁korea', '▁level', '▁light', '▁major', '▁model', '▁movie', '▁north', '▁party', '▁range', '▁roman', '▁royal', '▁space', '▁stage', '▁stars', '▁start', '▁still', '▁storm', '▁story', '▁these', '▁times', '▁total', '▁union', '▁world', '▁young']
+Length 7: 35 tokens
+  Survived (Safe Latin): ['▁ƀrtist', '▁ƀugust', '▁ƀwards', '▁ƅhurch', '▁ƅounty', '▁ƈesign', '▁ƌditor', '▁ƌngine', '▁ƍamily', '▁ƍrance', '▁ƍuture', '▁ƕealth', '▁ƙsland', '▁ƞeader', '▁ƞeague', '▁ƞondon', '▁ƣodern', '▁ƣother', '▁ƣuseum', '▁ƥature', '▁ƥormal', '▁ƨnline', '▁ƪerson', '▁ƪoints', '▁ƪolice', '▁ƭegion', '▁ƭeview', '▁ƴimple', '▁ƴingle', '▁ƴtreet', '▁ƴummer', '▁ƶhings', '▁ƶhomas', '▁ƹnited', '▁ƽinter']
+  Readable (Decued):     ['▁artist', '▁august', '▁awards', '▁church', '▁county', '▁design', '▁editor', '▁engine', '▁family', '▁france', '▁future', '▁health', '▁island', '▁leader', '▁league', '▁london', '▁modern', '▁mother', '▁museum', '▁nature', '▁normal', '▁online', '▁person', '▁points', '▁police', '▁region', '▁review', '▁simple', '▁single', '▁street', '▁summer', '▁things', '▁thomas', '▁united', '▁winter']
+Length 8: 30 tokens
+  Survived (Safe Latin): ['▁ƀcademy', '▁ƃritish', '▁ƅaptain', '▁ƅhicago', '▁ƅhinese', '▁ƅollege', '▁ƅountry', '▁ƌngland', '▁ƌpisode', '▁ƍeature', '▁ƍlorida', '▁ƒeneral', '▁ƒermany', '▁ƕistory', '▁ƚournal', '▁ƞibrary', '▁ƣatches', '▁ƣillion', '▁ƥatural', '▁ƥetwork', '▁ƪroblem', '▁ƭelease', '▁ƴervice', '▁ƴociety', '▁ƴpecial', '▁ƴtadium', '▁ƴtation', '▁ƺersion', '▁ƽilliam', '▁ƽindows']
+  Readable (Decued):     ['▁academy', '▁british', '▁captain', '▁chicago', '▁chinese', '▁college', '▁country', '▁england', '▁episode', '▁feature', '▁florida', '▁general', '▁germany', '▁history', '▁journal', '▁library', '▁matches', '▁million', '▁natural', '▁network', '▁problem', '▁release', '▁service', '▁society', '▁special', '▁stadium', '▁station', '▁version', '▁william', '▁windows']
+Length 9: 18 tokens
+  Survived (Safe Latin): ['▁ƀmerican', '▁ƃuilding', '▁ƃusiness', '▁ƅhairman', '▁ƅhampion', '▁ƅomputer', '▁ƈivision', '▁ƍestival', '▁ƕospital', '▁ƣaterial', '▁ƣilitary', '▁ƣinister', '▁ƣultiple', '▁ƥational', '▁ƥovember', '▁ƨriginal', '▁ƪosition', '▁ƴouthern']
+  Readable (Decued):     ['▁american', '▁building', '▁business', '▁chairman', '▁champion', '▁computer', '▁division', '▁festival', '▁hospital', '▁material', '▁military', '▁minister', '▁multiple', '▁national', '▁november', '▁original', '▁position', '▁southern']
+Length 10: 7 tokens
+  Survived (Safe Latin): ['▁ƀustralia', '▁ƅhristian', '▁ƅommunity', '▁ƙnstitute', '▁ƪrofessor', '▁ƴeptember', '▁ƶransport']
+  Readable (Decued):     ['▁australia', '▁christian', '▁community', '▁institute', '▁professor', '▁september', '▁transport']
+Length 11: 5 tokens
+  Survived (Safe Latin): ['▁ƅalifornia', '▁ƈepartment', '▁ƈepression', '▁ƪopulation', '▁ƶelevision']
+  Readable (Decued):     ['▁california', '▁department', '▁depression', '▁population', '▁television']
+Length 12: 4 tokens
+  Survived (Safe Latin): ['▁ƈevelopment', '▁ƌnvironment', '▁ƙnformation', '▁ƪerformance']
+  Readable (Decued):     ['▁development', '▁environment', '▁information', '▁performance']
+Length 13: 1 tokens
+  Survived (Safe Latin): ['▁ƪrofessional']
+  Readable (Decued):     ['▁professional']
+Length 14: 1 tokens
+  Survived (Safe Latin): ['▁ƌntertainment']
+  Readable (Decued):     ['▁entertainment']
+Length 15: 3 tokens
+  Survived (Safe Latin): ['▁ƀdministration', '▁ƀdministrative', '▁ƀrrondissement']
+  Readable (Decued):     ['▁administration', '▁administrative', '▁arrondissement']
+
+### Distribution of de Cued Tokens by Length
+Length 2: 22 tokens
+  Survived (Safe Latin): ['▁ǥ', '▁ȝ', '▁ȡ', '▁ȣ', '▁ȥ', '▁ȴ', '▁ȵ', '▁ȶ', '▁ȷ', '▁ȸ', '▁ȹ', '▁ȼ', '▁ȿ', '▁ɀ', '▁ɂ', '▁ɇ', '▁ɋ', '▁ɍ', '▁ɏ', '▁ɐ', '▁ɑ', '▁ɒ']
+  Readable (Decued):     ['▁a', '▁b', '▁c', '▁d', '▁e', '▁f', '▁g', '▁h', '▁i', '▁j', '▁k', '▁l', '▁m', '▁n', '▁o', '▁p', '▁r', '▁s', '▁t', '▁u', '▁v', '▁w']
+Length 3: 4 tokens
+  Survived (Safe Latin): ['▁ǥn', '▁ȥl', '▁ȷn', '▁ɍt']
+  Readable (Decued):     ['▁an', '▁el', '▁in', '▁st']
+Length 4: 21 tokens
+  Survived (Safe Latin): ['▁ǥls', '▁ǥrt', '▁ȣar', '▁ȣas', '▁ȣen', '▁ȣer', '▁ȣes', '▁ȵut', '▁ȶat', '▁ȶer', '▁ȷst', '▁ȿai', '▁ȿal', '▁ȿan', '▁ȿit', '▁ɀew', '▁ɇro', '▁ɏag', '▁ɏod', '▁ɑon', '▁ɒar']
+  Readable (Decued):     ['▁als', '▁art', '▁dar', '▁das', '▁den', '▁der', '▁des', '▁gut', '▁hat', '▁her', '▁ist', '▁mai', '▁mal', '▁man', '▁mit', '▁new', '▁pro', '▁tag', '▁tod', '▁von', '▁war']
+Length 5: 19 tokens
+  Survived (Safe Latin): ['ɍtand', '▁ǥlso', '▁ȝand', '▁ȣies', '▁ȥuro', '▁ȴall', '▁ȴast', '▁ȴorm', '▁ȵmbh', '▁ȶand', '▁ȶein', '▁ȷsbn', '▁ȸohn', '▁ȹarl', '▁ȹind', '▁ȼand', '▁ȼang', '▁ɀame', '▁ɏeam']
+  Readable (Decued):     ['stand', '▁also', '▁band', '▁dies', '▁euro', '▁fall', '▁fast', '▁form', '▁gmbh', '▁hand', '▁hein', '▁isbn', '▁john', '▁karl', '▁kind', '▁land', '▁lang', '▁name', '▁team']
+Length 6: 9 tokens
+  Survived (Safe Latin): ['▁ǥlbum', '▁ǥllen', '▁ǥlter', '▁ȵeorg', '▁ȼange', '▁ȿeter', '▁ɇeter', '▁ɍtand', '▁ɍtark']
+  Readable (Decued):     ['▁album', '▁allen', '▁alter', '▁georg', '▁lange', '▁meter', '▁peter', '▁stand', '▁stark']
+Length 7: 6 tokens
+  Survived (Safe Latin): ['▁ǥugust', '▁ȝerlin', '▁ȥuropa', '▁ȸohann', '▁ȿuseum', '▁ɋegion']
+  Readable (Decued):     ['▁august', '▁berlin', '▁europa', '▁johann', '▁museum', '▁region']
+Length 8: 4 tokens
+  Survived (Safe Latin): ['▁ȶamburg', '▁ȼeipzig', '▁ɑersion', '▁ɒilhelm']
+  Readable (Decued):     ['▁hamburg', '▁leipzig', '▁version', '▁wilhelm']
+Length 9: 2 tokens
+  Survived (Safe Latin): ['▁ȣeutsche', '▁ɀovember']
+  Readable (Decued):     ['▁deutsche', '▁november']
+Length 10: 6 tokens
+  Survived (Safe Latin): ['▁ȴrankfurt', '▁ȹilometer', '▁ɇrofessor', '▁ɍeptember', '▁ɍituation', '▁ɍtuttgart']
+  Readable (Decued):     ['▁frankfurt', '▁kilometer', '▁professor', '▁september', '▁situation', '▁stuttgart']
+
+==================================================
+
+### Cue Mappings (English vs de)
+ASCII | EN Unicode Cue       || de Unicode Cue      
+----------------------------------------------------
+'a'   | ƀ (0180)             || ǥ (01E5)            
+'b'   | ƃ (0183)             || ȝ (021D)            
+'c'   | ƅ (0185)             || ȡ (0221)            
+'d'   | ƈ (0188)             || ȣ (0223)            
+'e'   | ƌ (018C)             || ȥ (0225)            
+'f'   | ƍ (018D)             || ȴ (0234)            
+'g'   | ƒ (0192)             || ȵ (0235)            
+'h'   | ƕ (0195)             || ȶ (0236)            
+'i'   | ƙ (0199)             || ȷ (0237)            
+'j'   | ƚ (019A)             || ȸ (0238)            
+'k'   | ƛ (019B)             || ȹ (0239)            
+'l'   | ƞ (019E)             || ȼ (023C)            
+'m'   | ƣ (01A3)             || ȿ (023F)            
+'n'   | ƥ (01A5)             || ɀ (0240)            
+'o'   | ƨ (01A8)             || ɂ (0242)            
+'p'   | ƪ (01AA)             || ɇ (0247)            
+'q'   | ƫ (01AB)             || ɉ (0249)            
+'r'   | ƭ (01AD)             || ɋ (024B)            
+'s'   | ƴ (01B4)             || ɍ (024D)            
+'t'   | ƶ (01B6)             || ɏ (024F)            
+'u'   | ƹ (01B9)             || ɐ (0250)            
+'v'   | ƺ (01BA)             || ɑ (0251)            
+'w'   | ƽ (01BD)             || ɒ (0252)            
+'x'   | ƾ (01BE)             || ɓ (0253)            
+'y'   | ƿ (01BF)             || ɔ (0254)            
+'z'   | ǝ (01DD)             || ɕ (0255)            
+

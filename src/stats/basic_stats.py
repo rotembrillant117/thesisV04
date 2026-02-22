@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
-from src.utils.unicode import get_language_map
+import math
+import numpy as np
 
 
 def tokenization_cases(tokenizers_list, word_list, l1, l2, categories):
@@ -169,10 +170,6 @@ def format_table(headers, rows):
 
     return "\n".join(output)
 
-
-import numpy as np
-
-
 def get_fertility_distribution(tokenizer, corpus_path):
     """
     Computes a distribution of {num_subwords : count} over a training corpus.
@@ -193,9 +190,6 @@ def get_fertility_distribution(tokenizer, corpus_path):
                 dist[l] = dist.get(l, 0) + 1
 
     return dist
-
-
-import math
 
 
 def calc_renyi_efficiency(tokenizer, corpus_path, alpha=2.5):
