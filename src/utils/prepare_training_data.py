@@ -23,7 +23,7 @@ def get_directories(wd):
             dirs.append(x)
     return dirs
 
-def create_multi_text_file(path1, path2, file_name, num_rows=300_000, seed=42):
+def create_multi_text_file(path1, path2, file_name, num_rows=1_000_000, seed=42):
     """
     Creates a .txt file that combines two different text files by randomly sampling half of the lines
     from each input file using a specific random seed.
@@ -115,7 +115,7 @@ def create_multilingual_cues_corpus(language_pair_data):
 
 dirs = get_directories(TRAIN_DATA_DIR)
 clean_training_data()
-corpus_path_pairs = get_corpus_path_pairs(TRAIN_DATA_DIR / 'en' / 'eng-simple_wikipedia_2021_300K-sentences.txt', dirs)
+corpus_path_pairs = get_corpus_path_pairs(TRAIN_DATA_DIR / 'en' / 'eng_wikipedia_2016_1M-sentences.txt', dirs)
 for corpus_pair in corpus_path_pairs:
     english_data = corpus_pair[0]
     l2_data = corpus_pair[1]

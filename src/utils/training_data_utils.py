@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from .unicode import get_language_map
+from unicode import get_language_map
 
 DATA_DIR = Path(Path(__file__).resolve().parent.parent.parent) / 'data'
 
@@ -16,7 +16,7 @@ def get_corpus_words(language):
     :return: dictionary --> {word: word_frequency}
     """
     path = Path(WORDS_DATA_DIR / language)
-    word_file = [p.name for p in path.iterdir() if p.is_file()]
+    word_file = [p.name for p in path.iterdir() if p.is_file() and p.suffix == ".txt"]
     path = path / word_file[0]
     word_frequencies = dict()
     with open(path, 'r', encoding='utf-8') as f:
@@ -106,3 +106,7 @@ def inject_cues(word_list, l2_lang):
         }
 
     return injected_words
+
+# lista = ["se", "es", "fr", "it", "de", "ro"]
+# for l in lista:
+#     print(f"{l}: {len(get_crosslingual_homographs('en', l))}")
