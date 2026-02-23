@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from unicode import get_language_map
+from src.utils.unicode import get_language_map
 
 DATA_DIR = Path(Path(__file__).resolve().parent.parent.parent) / 'data'
 
