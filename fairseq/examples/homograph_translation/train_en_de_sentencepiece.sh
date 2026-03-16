@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 #
 # Adapted from https://github.com/facebookresearch/MIXER/blob/master/prepareData.sh
 
@@ -18,34 +19,28 @@ DEVICE=0
 EXPERIMENT_PREFIX="experiment"
 
 while [[ "$#" -gt 0 ]]
-do case $1 in
-    --src-bpe-tokens) SRC_BPE_TOKENS=$2
-    shift;;
-    --tgt-bpe-tokens) TGT_BPE_TOKENS=$2
-    shift;;
-    --src-dropout) SRC_DROPOUT=$2
-    shift;;
-    --tgt-dropout) TGT_DROPOUT=$2
-    shift;;
-    --jamo-type) JAMO_TYPE=$2
-    shift;;
-    --tokenizer-type) TOKENIZER_TYPE=$2
-    shift;;
-    --seed) SEED=$2
-    shift;;
-    --device) DEVICE=$2
-    shift;;
-    --experiment-name) EXPERIMENT_PREFIX="$2"
-    shift;;
-    *) echo "Unknown parameter passed: $1"
-    exit 1;;
-esac
-shift
+do
+    case $1 in
+        --src-bpe-tokens) SRC_BPE_TOKENS=$2; shift ;;
+        --tgt-bpe-tokens) TGT_BPE_TOKENS=$2; shift ;;
+        --src-dropout) SRC_DROPOUT=$2; shift ;;
+        --tgt-dropout) TGT_DROPOUT=$2; shift ;;
+        --jamo-type) JAMO_TYPE=$2; shift ;;
+        --tokenizer-type) TOKENIZER_TYPE=$2; shift ;;
+        --seed) SEED=$2; shift ;;
+        --device) DEVICE=$2; shift ;;
+        --experiment-name) EXPERIMENT_PREFIX="$2"; shift ;;
+        *)
+            echo "Unknown parameter passed: $1"
+            exit 1
+            ;;
+    esac
+    shift
 done
+
 echo "========= PARAMETERS =========== "
 echo -e "JAMO_TYPE $JAMO_TYPE \nSRC_TOKENS $SRC_BPE_TOKENS \nTGT_TOKENS $TGT_BPE_TOKENS \nSRC_DROPOUT $SRC_DROPOUT \nTGT_DROPOUT $TGT_DROPOUT \nSEED $SEED \nDEVICE $DEVICE \nNAME $EXPERIMENT_PREFIX\n"
 echo "========= PARAMETERS =========== "
-
 
 src=en
 tgt=de
@@ -53,13 +48,12 @@ lang=en-de
 
 EXPERIMENT_NAME="${EXPERIMENT_PREFIX}_jamo_type_${JAMO_TYPE}_tokenizer_type_${TOKENIZER_TYPE}_BPE_${SRC_BPE_TOKENS}_${TGT_BPE_TOKENS}_dropout_${SRC_DROPOUT}_${TGT_DROPOUT}_seed_${SEED}.${lang}"
 
-mkdir -p ../../${src}_${tgt}_sentencepiece_experiment_outputs
+mkdir -p "../../${src}_${tgt}_sentencepiece_experiment_outputs"
 
-prep=experiments/$EXPERIMENT_NAME
-tmp=$prep/tmp
-orig=orig/${JAMO_TYPE}
-HOMOGRAPH_ONLY_ORIG=orig/${JAMO_TYPE}_homograph_only
-HOMOGRAPH_ONLY_EXP=${EXPERIMENT_NAME}_homograph_only_eval
+prep="experiments/$EXPERIMENT_NAME"
+orig="orig/${JAMO_TYPE}"
+HOMOGRAPH_ONLY_ORIG="orig/${JAMO_TYPE}_homograph_only"
+HOMOGRAPH_ONLY_EXP="${EXPERIMENT_NAME}_homograph_only_eval"
 POST_PROCESS="sentencepiece_${JAMO_TYPE}"
 
 if [[ "$JAMO_TYPE" == *"homograph_marked"* ]]; then
@@ -74,14 +68,8 @@ then
     exit 0
 fi
 
-mkdir -p $prep
-mkdir -p experiments/$HOMOGRAPH_ONLY_EXP
-mkdir -p data-bin/$HOMOGRAPH_ONLY_EXP
-
-mkdir -p data-bin/$EXPERIMENT_NAME
-
-BPE_CODE=$prep/code
-BPE_VOCAB=$prep/vocab
+mkdir -p "$prep"
+mkdir -p "data-bin/$EXPERIMENT_NAME"
 
 python - <<PY
 import sentencepiece as spm
@@ -93,7 +81,7 @@ spm.SentencePieceTrainer.Train(
 )
 PY
 
-python3 dump_unigram_vocab.py $prep/joint_tokenizer.vocab $prep/joint_tokenizer.dict
+python3 dump_unigram_vocab.py "$prep/joint_tokenizer.vocab" "$prep/joint_tokenizer.dict"
 
 for f in train valid test; do
     echo "encode (joint tokenizer) ($src) to ${f}.${src}..."
@@ -105,7 +93,7 @@ with open("$orig/$f.$src", "r", encoding="utf-8") as fin, open("$prep/$f.$src", 
         pieces = sp.encode(line.strip(), out_type=str)
         fout.write(" ".join(pieces) + "\n")
 PY
-    cp $prep/$f.$src data-bin/$EXPERIMENT_NAME/$f.$src
+    cp "$prep/$f.$src" "data-bin/$EXPERIMENT_NAME/$f.$src"
 
     echo "encode (joint tokenizer) ($tgt) to ${f}.${tgt}..."
     python - <<PY
@@ -116,120 +104,136 @@ with open("$orig/$f.$tgt", "r", encoding="utf-8") as fin, open("$prep/$f.$tgt", 
         pieces = sp.encode(line.strip(), out_type=str)
         fout.write(" ".join(pieces) + "\n")
 PY
-    cp $prep/$f.$tgt data-bin/$EXPERIMENT_NAME/$f.$tgt
+    cp "$prep/$f.$tgt" "data-bin/$EXPERIMENT_NAME/$f.$tgt"
 done
 
 cd ../..
 
-TEXT=examples/homograph_translation/experiments/$EXPERIMENT_NAME
-fairseq-preprocess --source-lang $src --target-lang $tgt \
-    --trainpref $TEXT/train --validpref $TEXT/valid --testpref $TEXT/test \
-    --destdir examples/homograph_translation/data-bin/$EXPERIMENT_NAME \
+TEXT="examples/homograph_translation/experiments/$EXPERIMENT_NAME"
+MAIN_DEST="examples/homograph_translation/data-bin/$EXPERIMENT_NAME"
+
+fairseq-preprocess --source-lang "$src" --target-lang "$tgt" \
+    --trainpref "$TEXT/train" --validpref "$TEXT/valid" --testpref "$TEXT/test" \
+    --destdir "$MAIN_DEST" \
     --workers 8 \
     --joined-dictionary \
-    --srcdict examples/homograph_translation/experiments/$EXPERIMENT_NAME/joint_tokenizer.dict
+    --srcdict "$TEXT/joint_tokenizer.dict"
 
-cp ${TEXT}/joint_tokenizer.model ${TEXT}/joint_tokenizer.vocab ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIMENT_NAME/
-cp ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIMENT_NAME/dict.${src}.txt
-cp ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIMENT_NAME/dict.${tgt}.txt
+cp "$TEXT/joint_tokenizer.model" "$TEXT/joint_tokenizer.vocab" "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/"
+cp "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/dict.${src}.txt"
+cp "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/dict.${tgt}.txt"
 
-HOMO_TEXT=examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP
-HOMO_ORIG=examples/homograph_translation/${HOMOGRAPH_ONLY_ORIG}
-HOMO_DEST=examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP
+HOMO_TEXT="examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP"
+HOMO_ORIG="examples/homograph_translation/${HOMOGRAPH_ONLY_ORIG}"
+HOMO_DEST="examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP"
 
-cp $TEXT/train.$src $HOMO_TEXT/train.$src
-cp $TEXT/train.$tgt $HOMO_TEXT/train.$tgt
-cp $TEXT/valid.$src $HOMO_TEXT/valid.$src
-cp $TEXT/valid.$tgt $HOMO_TEXT/valid.$tgt
+if [[ ! -f "$HOMO_ORIG/test.$src" ]]; then
+    echo "Missing homograph-only source test file: $HOMO_ORIG/test.$src"
+    exit 1
+fi
+
+if [[ ! -f "$HOMO_ORIG/test.$tgt" ]]; then
+    echo "Missing homograph-only target test file: $HOMO_ORIG/test.$tgt"
+    exit 1
+fi
+
+rm -rf "$HOMO_TEXT"
+rm -rf "$HOMO_DEST"
+mkdir -p "$HOMO_TEXT"
+mkdir -p "$HOMO_DEST"
+
+cp "$TEXT/train.$src" "$HOMO_TEXT/train.$src"
+cp "$TEXT/train.$tgt" "$HOMO_TEXT/train.$tgt"
+cp "$TEXT/valid.$src" "$HOMO_TEXT/valid.$src"
+cp "$TEXT/valid.$tgt" "$HOMO_TEXT/valid.$tgt"
 
 python - <<PY
 import sentencepiece as spm
 
-sp = spm.SentencePieceProcessor(model_file="examples/homograph_translation/experiments/$EXPERIMENT_NAME/joint_tokenizer.model")
+sp = spm.SentencePieceProcessor(
+    model_file="examples/homograph_translation/experiments/$EXPERIMENT_NAME/joint_tokenizer.model"
+)
 
 for lang in ["$src", "$tgt"]:
-    with open(f"examples/homograph_translation/${HOMOGRAPH_ONLY_ORIG}/test.{lang}", "r", encoding="utf-8") as fin, \
-         open(f"examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP/test.{lang}", "w", encoding="utf-8") as fout:
+    with open(f"$HOMO_ORIG/test.{lang}", "r", encoding="utf-8") as fin, \
+         open(f"$HOMO_TEXT/test.{lang}", "w", encoding="utf-8") as fout:
         for line in fin:
             pieces = sp.encode(line.strip(), out_type=str)
             fout.write(" ".join(pieces) + "\n")
 PY
 
-fairseq-preprocess --source-lang $src --target-lang $tgt \
-    --trainpref $HOMO_TEXT/train --validpref $HOMO_TEXT/valid --testpref $HOMO_TEXT/test \
-    --destdir $HOMO_DEST \
+fairseq-preprocess --source-lang "$src" --target-lang "$tgt" \
+    --trainpref "$HOMO_TEXT/train" --validpref "$HOMO_TEXT/valid" --testpref "$HOMO_TEXT/test" \
+    --destdir "$HOMO_DEST" \
     --workers 8 \
     --joined-dictionary \
-    --srcdict $TEXT/joint_tokenizer.dict
+    --srcdict "$TEXT/joint_tokenizer.dict"
 
-cp $TEXT/joint_tokenizer.model $TEXT/joint_tokenizer.vocab $TEXT/joint_tokenizer.dict $HOMO_DEST/
-cp $TEXT/joint_tokenizer.dict $HOMO_DEST/dict.${src}.txt
-cp $TEXT/joint_tokenizer.dict $HOMO_DEST/dict.${tgt}.txt
+cp "$TEXT/joint_tokenizer.model" "$TEXT/joint_tokenizer.vocab" "$TEXT/joint_tokenizer.dict" "$HOMO_DEST/"
+cp "$TEXT/joint_tokenizer.dict" "$HOMO_DEST/dict.${src}.txt"
+cp "$TEXT/joint_tokenizer.dict" "$HOMO_DEST/dict.${tgt}.txt"
 
+mkdir -p "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}"
 
-mkdir -p ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/
+CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-bin/$EXPERIMENT_NAME" \
+    --arch transformer_iwslt_de_en \
+    --share-all-embeddings \
+    --optimizer adam --adam-betas '(0.9, 0.98)' \
+    --clip-norm 0.0 \
+    --lr 5e-4 \
+    --lr-scheduler inverse_sqrt \
+    --warmup-updates 4000 \
+    --validate-after-updates 1000 \
+    --dropout 0.1 \
+    --weight-decay 0.0001 \
+    --criterion label_smoothed_cross_entropy \
+    --label-smoothing 0.1 \
+    --max-tokens 4096 \
+    --eval-bleu \
+    --eval-bleu-args '{"beam": 5, "max_len_a": 1.2, "max_len_b": 10}' \
+    --eval-bleu-detok moses \
+    --eval-bleu-detok-args '{"target_lang": "de"}' \
+    --eval-bleu-remove-bpe="${POST_PROCESS}" \
+    --eval-bleu-print-samples \
+    --best-checkpoint-metric bleu \
+    --maximize-best-checkpoint-metric \
+    --patience 8 \
+    --save-dir "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}" \
+    --source-lang="$src" \
+    --target-lang="$tgt" \
+    --seed "$SEED" \
+    --task "translation-with-subword-regularization" \
+    --src-dropout "$SRC_DROPOUT" \
+    --tgt-dropout "$TGT_DROPOUT" \
+    --jamo-type "$JAMO_TYPE" \
+    --bpe-impl-path "$(pwd)/examples/homograph_translation" \
+    --raw-data-path "$(pwd)/examples/homograph_translation/orig/${JAMO_TYPE}" \
+    --no-epoch-checkpoints \
+    > "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/${EXPERIMENT_NAME}.log"
 
-CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-train  examples/homograph_translation/data-bin/$EXPERIMENT_NAME \
-                                            --arch transformer_iwslt_de_en \
-                                            --share-all-embeddings \
-                                            --optimizer adam --adam-betas '(0.9, 0.98)' \
-                                            --clip-norm 0.0 \
-                                            --lr 5e-4 \
-                                            --lr-scheduler inverse_sqrt \
-                                            --warmup-updates 4000 \
-                                            --validate-after-updates 1000 \
-                                            --dropout 0.1 \
-                                            --weight-decay 0.0001 \
-                                            --criterion label_smoothed_cross_entropy \
-                                            --label-smoothing 0.1 \
-                                            --max-tokens 4096 \
-                                            --eval-bleu  \
-                                            --eval-bleu-args '{"beam": 5, "max_len_a": 1.2, "max_len_b": 10}' \
-                                            --eval-bleu-detok moses \
-                                            --eval-bleu-detok-args '{"target_lang": "de"}' \
-                                            --eval-bleu-remove-bpe=${POST_PROCESS} \
-                                            --eval-bleu-print-samples \
-                                            --best-checkpoint-metric bleu \
-                                            --maximize-best-checkpoint-metric \
-                                            --patience 8  \
-                                            --save-dir "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}" \
-                                            --source-lang=$src \
-                                            --target-lang=$tgt \
-                                            --seed $SEED \
-                                            --task "translation-with-subword-regularization" \
-                                            --src-dropout $SRC_DROPOUT \
-                                            --tgt-dropout $TGT_DROPOUT \
-                                            --jamo-type $JAMO_TYPE \
-                                            --bpe-impl-path "$(pwd)/examples/homograph_translation" \
-                                            --raw-data-path "$(pwd)/examples/homograph_translation/orig/${JAMO_TYPE}" \
-                                            --no-epoch-checkpoints > ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/$EXPERIMENT_NAME.log
-                                            
+CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$EXPERIMENT_NAME" \
+    --path "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt" \
+    --batch-size 128 \
+    --beam 5 \
+    --max-len-a 1.2 \
+    --max-len-b 10 \
+    --remove-bpe="${POST_PROCESS}" \
+    --source-lang="$src" \
+    --target-lang="$tgt" \
+    > "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_unprocessed.log"
 
+CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP" \
+    --path "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt" \
+    --batch-size 128 \
+    --beam 5 \
+    --max-len-a 1.2 \
+    --max-len-b 10 \
+    --remove-bpe="${POST_PROCESS}" \
+    --source-lang="$src" \
+    --target-lang="$tgt" \
+    > "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_homograph_only_unprocessed.log"
 
-CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-generate examples/homograph_translation/data-bin/$EXPERIMENT_NAME \
-                                        --path ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt \
-                                        --batch-size 128 \
-                                        --beam 5 \
-                                        --max-len-a 1.2 \
-                                        --max-len-b 10 \
-                                        --remove-bpe=${POST_PROCESS} \
-                                        --source-lang=$src \
-                                        --target-lang=$tgt \
-                                        > ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_unprocessed.log
-
-CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-generate examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP \
-                                        --path ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt \
-                                        --batch-size 128 \
-                                        --beam 5 \
-                                        --max-len-a 1.2 \
-                                        --max-len-b 10 \
-                                        --remove-bpe=${POST_PROCESS} \
-                                        --source-lang=$src \
-                                        --target-lang=$tgt \
-                                        > ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_homograph_only_unprocessed.log
-
-
-cd ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}
+cd "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}"
 
 grep --text ^H bleu_unprocessed.log | cut -f3- > gen.out.sys
 grep --text ^T bleu_unprocessed.log | cut -f2- > gen.out.ref
