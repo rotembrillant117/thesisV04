@@ -373,15 +373,45 @@ def batch_by_size(
         fixed_shapes_sorted = fixed_shapes[sort_order]
         return batch_fixed_shapes_fast(indices, num_tokens_fn, fixed_shapes_sorted)
 
-from src.utils.unicode import get_inverse_language_map
-
-
 def remove_language_cues(sentence: str):
-    inverse_maps = get_inverse_language_map()
+    import string
+    import unicodedata as ud
+
+    def is_stable(ch):
+        for form in ("NFC", "NFD", "NFKC", "NFKD"):
+            if ud.normalize(form, ch) != ch:
+                return False
+        return True
+
+    def get_safe_latin_chars(limit=100):
+        safe_chars = []
+        current_cp = 0x0180
+
+        while len(safe_chars) < limit:
+            char = chr(current_cp)
+            if ud.category(char) == "Ll":
+                if is_stable(char):
+                    safe_chars.append(char)
+            current_cp += 1
+            if current_cp > 0x2FFF:
+                break
+
+        return safe_chars
+
+    safe_chars = get_safe_latin_chars()
+    if len(safe_chars) < 52:
+        raise ValueError(f"Not enough safe Latin characters found (needed 52, got {len(safe_chars)})")
+
+    en_alphabet = safe_chars[0:26]
+    l2_alphabet = safe_chars[26:52]
+
     merged = {}
 
-    for mapping in inverse_maps.values():
-        merged.update(mapping)
+    for ascii_letter, cue_char in zip(string.ascii_lowercase, en_alphabet):
+        merged[cue_char] = ascii_letter
+
+    for ascii_letter, cue_char in zip(string.ascii_lowercase, l2_alphabet):
+        merged[cue_char] = ascii_letter
 
     return "".join(merged.get(ch, ch) for ch in sentence)
 
