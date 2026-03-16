@@ -32,7 +32,7 @@ htmlcov/
 .hypothesis/
 
 # Datasets
-data/
+/data/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -62,15 +62,15 @@ desktop.ini
 *~
 
 # Project outputs
-models/
-trials/
-stats_results/
+/models/
+/trials/
+/stats_results/
 
 # Fairseq generated artifacts
-fairseq/examples/homograph_translation/data-bin/
-fairseq/examples/homograph_translation/experiments/
-fairseq/en_de_sentencepiece_experiment_outputs/
+/fairseq/examples/homograph_translation/data-bin/
+/fairseq/examples/homograph_translation/experiments/
+/fairseq/en_de_sentencepiece_experiment_outputs/
 
 # Local MT corpora, if you do not want them on GitHub
-fairseq/examples/homograph_translation/orig/en_de_standard/
-fairseq/examples/homograph_translation/orig/en_de_homograph_marked/
+/fairseq/examples/homograph_translation/orig/en_de_standard/
+/fairseq/examples/homograph_translation/orig/en_de_homograph_marked/
