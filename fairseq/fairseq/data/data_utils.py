@@ -373,6 +373,17 @@ def batch_by_size(
         fixed_shapes_sorted = fixed_shapes[sort_order]
         return batch_fixed_shapes_fast(indices, num_tokens_fn, fixed_shapes_sorted)
 
+from src.utils.unicode import get_inverse_language_map
+
+
+def remove_language_cues(sentence: str):
+    inverse_maps = get_inverse_language_map()
+    merged = {}
+
+    for mapping in inverse_maps.values():
+        merged.update(mapping)
+
+    return "".join(merged.get(ch, ch) for ch in sentence)
 
 def post_process(sentence: str, symbol: str):
     if symbol == "sentencepiece":
@@ -401,6 +412,8 @@ def post_process(sentence: str, symbol: str):
         elif "byte" in symbol:
             if not any(c in "aeiou0123456789AEIOU.!?" for c in sentence):
                 sentence = round_trip_byte_encoder.decode_pseudo_bytes_to_string_preserve_spaces(sentence)
+        elif "cues" in symbol:
+            sentence = remove_language_cues(sentence)
     elif symbol == "none":
         pass
     elif symbol is not None:

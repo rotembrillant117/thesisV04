@@ -58,7 +58,13 @@ mkdir -p ../../${src}_${tgt}_sentencepiece_experiment_outputs
 prep=experiments/$EXPERIMENT_NAME
 tmp=$prep/tmp
 orig=orig/${JAMO_TYPE}
+POST_PROCESS="sentencepiece_${JAMO_TYPE}"
 
+if [[ "$JAMO_TYPE" == *"homograph_marked"* ]]; then
+    POST_PROCESS="sentencepiece_cues"
+fi
+
+echo "POST_PROCESS $POST_PROCESS"
 
 if [ -d "../../${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}" ]
 then
@@ -144,7 +150,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-train  examples/homograph_translation
                                             --eval-bleu-args '{"beam": 5, "max_len_a": 1.2, "max_len_b": 10}' \
                                             --eval-bleu-detok moses \
                                             --eval-bleu-detok-args '{"target_lang": "de"}' \
-                                            --eval-bleu-remove-bpe=sentencepiece_${JAMO_TYPE} \
+                                            --eval-bleu-remove-bpe=${POST_PROCESS} \
                                             --eval-bleu-print-samples \
                                             --best-checkpoint-metric bleu \
                                             --maximize-best-checkpoint-metric \
@@ -169,7 +175,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-generate examples/homograph_translati
                                         --beam 5 \
                                         --max-len-a 1.2 \
                                         --max-len-b 10 \
-                                        --remove-bpe=sentencepiece_${JAMO_TYPE} \
+                                        --remove-bpe=${POST_PROCESS} \
                                         --source-lang=$src \
                                         --target-lang=$tgt \
                                         > ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_unprocessed.log
