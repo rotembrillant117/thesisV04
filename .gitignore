@@ -1,0 +1,76 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.python-version
+
+# Distribution / packaging
+build/
+dist/
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.hypothesis/
+
+# Datasets
+data/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+*.env
+
+# IDEs
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# Project outputs
+models/
+trials/
+stats_results/
+
+# Fairseq generated artifacts
+fairseq/examples/homograph_translation/data-bin/
+fairseq/examples/homograph_translation/experiments/
+fairseq/en_de_sentencepiece_experiment_outputs/
+
+# Local MT corpora, if you do not want them on GitHub
+fairseq/examples/homograph_translation/orig/en_de_standard/
+fairseq/examples/homograph_translation/orig/en_de_homograph_marked/
