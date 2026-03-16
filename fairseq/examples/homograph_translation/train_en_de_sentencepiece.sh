@@ -134,6 +134,8 @@ cp ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIM
 cp ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIMENT_NAME/dict.${tgt}.txt
 
 HOMO_TEXT=examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP
+HOMO_ORIG=examples/homograph_translation/${HOMOGRAPH_ONLY_ORIG}
+HOMO_DEST=examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP
 
 cp $TEXT/train.$src $HOMO_TEXT/train.$src
 cp $TEXT/train.$tgt $HOMO_TEXT/train.$tgt
@@ -143,10 +145,11 @@ cp $TEXT/valid.$tgt $HOMO_TEXT/valid.$tgt
 python - <<PY
 import sentencepiece as spm
 
-sp = spm.SentencePieceProcessor(model_file="$prep/joint_tokenizer.model")
+sp = spm.SentencePieceProcessor(model_file="examples/homograph_translation/experiments/$EXPERIMENT_NAME/joint_tokenizer.model")
 
 for lang in ["$src", "$tgt"]:
-    with open("$HOMOGRAPH_ONLY_ORIG/test." + lang, "r", encoding="utf-8") as fin, open("$HOMO_TEXT/test." + lang, "w", encoding="utf-8") as fout:
+    with open(f"examples/homograph_translation/${HOMOGRAPH_ONLY_ORIG}/test.{lang}", "r", encoding="utf-8") as fin, \
+         open(f"examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP/test.{lang}", "w", encoding="utf-8") as fout:
         for line in fin:
             pieces = sp.encode(line.strip(), out_type=str)
             fout.write(" ".join(pieces) + "\n")
@@ -154,14 +157,14 @@ PY
 
 fairseq-preprocess --source-lang $src --target-lang $tgt \
     --trainpref $HOMO_TEXT/train --validpref $HOMO_TEXT/valid --testpref $HOMO_TEXT/test \
-    --destdir examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP \
+    --destdir $HOMO_DEST \
     --workers 8 \
     --joined-dictionary \
     --srcdict $TEXT/joint_tokenizer.dict
 
-cp $TEXT/joint_tokenizer.model $TEXT/joint_tokenizer.vocab $TEXT/joint_tokenizer.dict examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP/
-cp $TEXT/joint_tokenizer.dict examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP/dict.${src}.txt
-cp $TEXT/joint_tokenizer.dict examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP/dict.${tgt}.txt
+cp $TEXT/joint_tokenizer.model $TEXT/joint_tokenizer.vocab $TEXT/joint_tokenizer.dict $HOMO_DEST/
+cp $TEXT/joint_tokenizer.dict $HOMO_DEST/dict.${src}.txt
+cp $TEXT/joint_tokenizer.dict $HOMO_DEST/dict.${tgt}.txt
 
 
 mkdir -p ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/
