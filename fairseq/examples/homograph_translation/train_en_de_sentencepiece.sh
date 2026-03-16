@@ -58,6 +58,8 @@ mkdir -p ../../${src}_${tgt}_sentencepiece_experiment_outputs
 prep=experiments/$EXPERIMENT_NAME
 tmp=$prep/tmp
 orig=orig/${JAMO_TYPE}
+HOMOGRAPH_ONLY_ORIG=orig/${JAMO_TYPE}_homograph_only
+HOMOGRAPH_ONLY_EXP=${EXPERIMENT_NAME}_homograph_only_eval
 POST_PROCESS="sentencepiece_${JAMO_TYPE}"
 
 if [[ "$JAMO_TYPE" == *"homograph_marked"* ]]; then
@@ -73,6 +75,8 @@ then
 fi
 
 mkdir -p $prep
+mkdir -p experiments/$HOMOGRAPH_ONLY_EXP
+mkdir -p data-bin/$HOMOGRAPH_ONLY_EXP
 
 mkdir -p data-bin/$EXPERIMENT_NAME
 
@@ -129,6 +133,36 @@ cp ${TEXT}/joint_tokenizer.model ${TEXT}/joint_tokenizer.vocab ${TEXT}/joint_tok
 cp ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIMENT_NAME/dict.${src}.txt
 cp ${TEXT}/joint_tokenizer.dict examples/homograph_translation/data-bin/$EXPERIMENT_NAME/dict.${tgt}.txt
 
+HOMO_TEXT=examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP
+
+cp $TEXT/train.$src $HOMO_TEXT/train.$src
+cp $TEXT/train.$tgt $HOMO_TEXT/train.$tgt
+cp $TEXT/valid.$src $HOMO_TEXT/valid.$src
+cp $TEXT/valid.$tgt $HOMO_TEXT/valid.$tgt
+
+python - <<PY
+import sentencepiece as spm
+
+sp = spm.SentencePieceProcessor(model_file="$prep/joint_tokenizer.model")
+
+for lang in ["$src", "$tgt"]:
+    with open("$HOMOGRAPH_ONLY_ORIG/test." + lang, "r", encoding="utf-8") as fin, open("$HOMO_TEXT/test." + lang, "w", encoding="utf-8") as fout:
+        for line in fin:
+            pieces = sp.encode(line.strip(), out_type=str)
+            fout.write(" ".join(pieces) + "\n")
+PY
+
+fairseq-preprocess --source-lang $src --target-lang $tgt \
+    --trainpref $HOMO_TEXT/train --validpref $HOMO_TEXT/valid --testpref $HOMO_TEXT/test \
+    --destdir examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP \
+    --workers 8 \
+    --joined-dictionary \
+    --srcdict $TEXT/joint_tokenizer.dict
+
+cp $TEXT/joint_tokenizer.model $TEXT/joint_tokenizer.vocab $TEXT/joint_tokenizer.dict examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP/
+cp $TEXT/joint_tokenizer.dict examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP/dict.${src}.txt
+cp $TEXT/joint_tokenizer.dict examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP/dict.${tgt}.txt
+
 
 mkdir -p ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/
 
@@ -180,6 +214,16 @@ CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-generate examples/homograph_translati
                                         --target-lang=$tgt \
                                         > ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_unprocessed.log
 
+CUDA_VISIBLE_DEVICES=$DEVICE nohup fairseq-generate examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP \
+                                        --path ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt \
+                                        --batch-size 128 \
+                                        --beam 5 \
+                                        --max-len-a 1.2 \
+                                        --max-len-b 10 \
+                                        --remove-bpe=${POST_PROCESS} \
+                                        --source-lang=$src \
+                                        --target-lang=$tgt \
+                                        > ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_homograph_only_unprocessed.log
 
 
 cd ${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}
@@ -190,3 +234,10 @@ cat gen.out.sys | sacremoses -l de detokenize > gen.out.sys.detok
 cat gen.out.ref | sacremoses -l de detokenize > gen.out.ref.detok
 sacrebleu gen.out.ref.detok -i gen.out.sys.detok -m bleu -b -w 4 > BLEU.txt
 sacrebleu gen.out.ref.detok -i gen.out.sys.detok -m chrf -b > CHRF.txt
+
+grep --text ^H bleu_homograph_only_unprocessed.log | cut -f3- > gen.out.homograph_only.sys
+grep --text ^T bleu_homograph_only_unprocessed.log | cut -f2- > gen.out.homograph_only.ref
+cat gen.out.homograph_only.sys | sacremoses -l de detokenize > gen.out.homograph_only.sys.detok
+cat gen.out.homograph_only.ref | sacremoses -l de detokenize > gen.out.homograph_only.ref.detok
+sacrebleu gen.out.homograph_only.ref.detok -i gen.out.homograph_only.sys.detok -m bleu -b -w 4 > BLEU_homograph_only.txt
+sacrebleu gen.out.homograph_only.ref.detok -i gen.out.homograph_only.sys.detok -m chrf -b > CHRF_homograph_only.txt
