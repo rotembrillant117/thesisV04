@@ -3,11 +3,14 @@
 #
 # Adapted from https://github.com/facebookresearch/MIXER/blob/master/prepareData.sh
 
+set -euo pipefail
+
 SCRIPTS=mosesdecoder/scripts
 TOKENIZER=$SCRIPTS/tokenizer/tokenizer.perl
 LC=$SCRIPTS/tokenizer/lowercase.perl
 CLEAN=$SCRIPTS/training/clean-corpus-n.perl
 BPEROOT=subword-nmt/subword_nmt
+
 TOKENIZER_TYPE=bpe
 SRC_BPE_TOKENS=8000
 TGT_BPE_TOKENS=8000
@@ -38,43 +41,142 @@ do
     shift
 done
 
+if [[ -z "${JAMO_TYPE:-}" ]]; then
+    echo "Missing required argument: --jamo-type"
+    exit 1
+fi
+
 echo "========= PARAMETERS =========== "
-echo -e "JAMO_TYPE $JAMO_TYPE \nSRC_TOKENS $SRC_BPE_TOKENS \nTGT_TOKENS $TGT_BPE_TOKENS \nSRC_DROPOUT $SRC_DROPOUT \nTGT_DROPOUT $TGT_DROPOUT \nSEED $SEED \nDEVICE $DEVICE \nNAME $EXPERIMENT_PREFIX\n"
+echo -e "JAMO_TYPE $JAMO_TYPE \nSRC_TOKENS $SRC_BPE_TOKENS \nTGT_TOKENS $TGT_BPE_TOKENS \nSRC_DROPOUT $SRC_DROPOUT \nTGT_DROPOUT $TGT_DROPOUT \nSEED $SEED \nDEVICE $DEVICE \nTOKENIZER_TYPE $TOKENIZER_TYPE \nNAME $EXPERIMENT_PREFIX\n"
 echo "========= PARAMETERS =========== "
 
 src=en
 tgt=de
 lang=en-de
 
-EXPERIMENT_NAME="${EXPERIMENT_PREFIX}_jamo_type_${JAMO_TYPE}_tokenizer_type_${TOKENIZER_TYPE}_BPE_${SRC_BPE_TOKENS}_${TGT_BPE_TOKENS}_dropout_${SRC_DROPOUT}_${TGT_DROPOUT}_seed_${SEED}.${lang}"
+case "$JAMO_TYPE" in
+    en_de_baseline)
+        MAIN_DATASET_DIR="orig/en_de_baseline"
+        HOMOGRAPH_DATASET_DIR="orig/en_de_baseline_homograph"
+        FLORES_DATASET_DIR="orig/en_de_flores"
+        FLORES_HOMOGRAPH_DATASET_DIR="orig/en_de_flores_homograph"
+        POST_PROCESS="sentencepiece"
+        ;;
+    en_de_cue)
+        MAIN_DATASET_DIR="orig/en_de_cue"
+        HOMOGRAPH_DATASET_DIR="orig/en_de_cue_homograph"
+        FLORES_DATASET_DIR="orig/en_de_flores_cue"
+        FLORES_HOMOGRAPH_DATASET_DIR="orig/en_de_flores_cue_homograph"
+        POST_PROCESS="sentencepiece_cues"
+        ;;
+    *)
+        echo "Unsupported --jamo-type: $JAMO_TYPE"
+        echo "Expected one of: en_de_baseline, en_de_cue"
+        exit 1
+        ;;
+esac
 
-mkdir -p "../../${src}_${tgt}_sentencepiece_experiment_outputs"
+EXPERIMENT_NAME="${EXPERIMENT_PREFIX}_jamo_type_${JAMO_TYPE}_tokenizer_type_${TOKENIZER_TYPE}_${SRC_BPE_TOKENS}_${TGT_BPE_TOKENS}_dropout_${SRC_DROPOUT}_${TGT_DROPOUT}_seed_${SEED}.${lang}"
+
+OUTPUT_ROOT="../../${src}_${tgt}_sentencepiece_experiment_outputs/${TOKENIZER_TYPE}"
+EXPERIMENT_OUTPUT_DIR="${OUTPUT_ROOT}/${EXPERIMENT_NAME}"
 
 prep="experiments/$EXPERIMENT_NAME"
-orig="orig/${JAMO_TYPE}"
-HOMOGRAPH_ONLY_ORIG="orig/${JAMO_TYPE}_homograph_only"
-HOMOGRAPH_ONLY_EXP="${EXPERIMENT_NAME}_homograph_only_eval"
-POST_PROCESS="sentencepiece_${JAMO_TYPE}"
+MAIN_DEST_REL="data-bin/$EXPERIMENT_NAME"
 
-if [[ "$JAMO_TYPE" == *"homograph_marked"* ]]; then
-    POST_PROCESS="sentencepiece_cues"
-fi
+HOMOGRAPH_EVAL_NAME="${EXPERIMENT_NAME}_homograph_eval"
+HOMOGRAPH_TEXT_REL="experiments/$HOMOGRAPH_EVAL_NAME"
+HOMOGRAPH_DEST_REL="data-bin/$HOMOGRAPH_EVAL_NAME"
 
+FLORES_EVAL_NAME="${EXPERIMENT_NAME}_flores_eval"
+FLORES_TEXT_REL="experiments/$FLORES_EVAL_NAME"
+FLORES_DEST_REL="data-bin/$FLORES_EVAL_NAME"
+
+FLORES_HOMOGRAPH_EVAL_NAME="${EXPERIMENT_NAME}_flores_homograph_eval"
+FLORES_HOMOGRAPH_TEXT_REL="experiments/$FLORES_HOMOGRAPH_EVAL_NAME"
+FLORES_HOMOGRAPH_DEST_REL="data-bin/$FLORES_HOMOGRAPH_EVAL_NAME"
+
+echo "MAIN_DATASET_DIR $MAIN_DATASET_DIR"
+echo "HOMOGRAPH_DATASET_DIR $HOMOGRAPH_DATASET_DIR"
+echo "FLORES_DATASET_DIR $FLORES_DATASET_DIR"
+echo "FLORES_HOMOGRAPH_DATASET_DIR $FLORES_HOMOGRAPH_DATASET_DIR"
 echo "POST_PROCESS $POST_PROCESS"
+echo "EXPERIMENT_OUTPUT_DIR $EXPERIMENT_OUTPUT_DIR"
 
-if [ -d "../../${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}" ]
+if [ -d "$EXPERIMENT_OUTPUT_DIR" ]
 then
     echo "${EXPERIMENT_NAME} already done, SKIPPING"
     exit 0
 fi
 
+if [[ ! -f "${MAIN_DATASET_DIR}/train.${src}" ]]; then
+    echo "Missing main training source file: ${MAIN_DATASET_DIR}/train.${src}"
+    exit 1
+fi
+
+if [[ ! -f "${MAIN_DATASET_DIR}/train.${tgt}" ]]; then
+    echo "Missing main training target file: ${MAIN_DATASET_DIR}/train.${tgt}"
+    exit 1
+fi
+
+if [[ ! -f "${MAIN_DATASET_DIR}/valid.${src}" ]]; then
+    echo "Missing main validation source file: ${MAIN_DATASET_DIR}/valid.${src}"
+    exit 1
+fi
+
+if [[ ! -f "${MAIN_DATASET_DIR}/valid.${tgt}" ]]; then
+    echo "Missing main validation target file: ${MAIN_DATASET_DIR}/valid.${tgt}"
+    exit 1
+fi
+
+if [[ ! -f "${MAIN_DATASET_DIR}/test.${src}" ]]; then
+    echo "Missing main test source file: ${MAIN_DATASET_DIR}/test.${src}"
+    exit 1
+fi
+
+if [[ ! -f "${MAIN_DATASET_DIR}/test.${tgt}" ]]; then
+    echo "Missing main test target file: ${MAIN_DATASET_DIR}/test.${tgt}"
+    exit 1
+fi
+
+if [[ ! -f "${HOMOGRAPH_DATASET_DIR}/test.${src}" ]]; then
+    echo "Missing homograph source test file: ${HOMOGRAPH_DATASET_DIR}/test.${src}"
+    exit 1
+fi
+
+if [[ ! -f "${HOMOGRAPH_DATASET_DIR}/test.${tgt}" ]]; then
+    echo "Missing homograph target test file: ${HOMOGRAPH_DATASET_DIR}/test.${tgt}"
+    exit 1
+fi
+
+if [[ ! -f "${FLORES_DATASET_DIR}/test.${src}" ]]; then
+    echo "Missing FLORES source test file: ${FLORES_DATASET_DIR}/test.${src}"
+    exit 1
+fi
+
+if [[ ! -f "${FLORES_DATASET_DIR}/test.${tgt}" ]]; then
+    echo "Missing FLORES target test file: ${FLORES_DATASET_DIR}/test.${tgt}"
+    exit 1
+fi
+
+if [[ ! -f "${FLORES_HOMOGRAPH_DATASET_DIR}/test.${src}" ]]; then
+    echo "Missing FLORES homograph source test file: ${FLORES_HOMOGRAPH_DATASET_DIR}/test.${src}"
+    exit 1
+fi
+
+if [[ ! -f "${FLORES_HOMOGRAPH_DATASET_DIR}/test.${tgt}" ]]; then
+    echo "Missing FLORES homograph target test file: ${FLORES_HOMOGRAPH_DATASET_DIR}/test.${tgt}"
+    exit 1
+fi
+
+mkdir -p "$OUTPUT_ROOT"
 mkdir -p "$prep"
-mkdir -p "data-bin/$EXPERIMENT_NAME"
+mkdir -p "$MAIN_DEST_REL"
 
 python - <<PY
 import sentencepiece as spm
 spm.SentencePieceTrainer.Train(
-    input="$orig/train.$src,$orig/train.$tgt",
+    input="${MAIN_DATASET_DIR}/train.${src},${MAIN_DATASET_DIR}/train.${tgt}",
     model_prefix="$prep/joint_tokenizer",
     vocab_size=int("$SRC_BPE_TOKENS"),
     model_type="$TOKENIZER_TYPE",
@@ -88,29 +190,30 @@ for f in train valid test; do
     python - <<PY
 import sentencepiece as spm
 sp = spm.SentencePieceProcessor(model_file="$prep/joint_tokenizer.model")
-with open("$orig/$f.$src", "r", encoding="utf-8") as fin, open("$prep/$f.$src", "w", encoding="utf-8") as fout:
+with open("${MAIN_DATASET_DIR}/$f.$src", "r", encoding="utf-8") as fin, open("$prep/$f.$src", "w", encoding="utf-8") as fout:
     for line in fin:
         pieces = sp.encode(line.strip(), out_type=str)
         fout.write(" ".join(pieces) + "\n")
 PY
-    cp "$prep/$f.$src" "data-bin/$EXPERIMENT_NAME/$f.$src"
+    cp "$prep/$f.$src" "$MAIN_DEST_REL/$f.$src"
 
     echo "encode (joint tokenizer) ($tgt) to ${f}.${tgt}..."
     python - <<PY
 import sentencepiece as spm
 sp = spm.SentencePieceProcessor(model_file="$prep/joint_tokenizer.model")
-with open("$orig/$f.$tgt", "r", encoding="utf-8") as fin, open("$prep/$f.$tgt", "w", encoding="utf-8") as fout:
+with open("${MAIN_DATASET_DIR}/$f.$tgt", "r", encoding="utf-8") as fin, open("$prep/$f.$tgt", "w", encoding="utf-8") as fout:
     for line in fin:
         pieces = sp.encode(line.strip(), out_type=str)
         fout.write(" ".join(pieces) + "\n")
 PY
-    cp "$prep/$f.$tgt" "data-bin/$EXPERIMENT_NAME/$f.$tgt"
+    cp "$prep/$f.$tgt" "$MAIN_DEST_REL/$f.$tgt"
 done
 
 cd ../..
 
-TEXT="examples/homograph_translation/experiments/$EXPERIMENT_NAME"
-MAIN_DEST="examples/homograph_translation/data-bin/$EXPERIMENT_NAME"
+TEXT="examples/homograph_translation/$prep"
+MAIN_DEST="examples/homograph_translation/$MAIN_DEST_REL"
+OUTPUT_DIR="${src}_${tgt}_sentencepiece_experiment_outputs/${TOKENIZER_TYPE}/${EXPERIMENT_NAME}"
 
 fairseq-preprocess --source-lang "$src" --target-lang "$tgt" \
     --trainpref "$TEXT/train" --validpref "$TEXT/valid" --testpref "$TEXT/test" \
@@ -123,57 +226,55 @@ cp "$TEXT/joint_tokenizer.model" "$TEXT/joint_tokenizer.vocab" "$TEXT/joint_toke
 cp "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/dict.${src}.txt"
 cp "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/dict.${tgt}.txt"
 
-HOMO_TEXT="examples/homograph_translation/experiments/$HOMOGRAPH_ONLY_EXP"
-HOMO_ORIG="examples/homograph_translation/${HOMOGRAPH_ONLY_ORIG}"
-HOMO_DEST="examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP"
+encode_test_pair() {
+    local input_dir="$1"
+    local output_dir="$2"
 
-if [[ ! -f "$HOMO_ORIG/test.$src" ]]; then
-    echo "Missing homograph-only source test file: $HOMO_ORIG/test.$src"
-    exit 1
-fi
+    rm -rf "$output_dir"
+    mkdir -p "$output_dir"
 
-if [[ ! -f "$HOMO_ORIG/test.$tgt" ]]; then
-    echo "Missing homograph-only target test file: $HOMO_ORIG/test.$tgt"
-    exit 1
-fi
-
-rm -rf "$HOMO_TEXT"
-rm -rf "$HOMO_DEST"
-mkdir -p "$HOMO_TEXT"
-mkdir -p "$HOMO_DEST"
-
-cp "$TEXT/train.$src" "$HOMO_TEXT/train.$src"
-cp "$TEXT/train.$tgt" "$HOMO_TEXT/train.$tgt"
-cp "$TEXT/valid.$src" "$HOMO_TEXT/valid.$src"
-cp "$TEXT/valid.$tgt" "$HOMO_TEXT/valid.$tgt"
-
-python - <<PY
+    python - <<PY
 import sentencepiece as spm
 
-sp = spm.SentencePieceProcessor(
-    model_file="examples/homograph_translation/experiments/$EXPERIMENT_NAME/joint_tokenizer.model"
-)
+sp = spm.SentencePieceProcessor(model_file="$TEXT/joint_tokenizer.model")
 
 for lang in ["$src", "$tgt"]:
-    with open(f"$HOMO_ORIG/test.{lang}", "r", encoding="utf-8") as fin, \
-         open(f"$HOMO_TEXT/test.{lang}", "w", encoding="utf-8") as fout:
+    with open(f"$input_dir/test.{lang}", "r", encoding="utf-8") as fin, \
+         open(f"$output_dir/test.{lang}", "w", encoding="utf-8") as fout:
         for line in fin:
             pieces = sp.encode(line.strip(), out_type=str)
             fout.write(" ".join(pieces) + "\n")
 PY
+}
 
-fairseq-preprocess --source-lang "$src" --target-lang "$tgt" \
-    --trainpref "$HOMO_TEXT/train" --validpref "$HOMO_TEXT/valid" --testpref "$HOMO_TEXT/test" \
-    --destdir "$HOMO_DEST" \
-    --workers 8 \
-    --joined-dictionary \
-    --srcdict "$TEXT/joint_tokenizer.dict"
+prepare_test_only_eval_bin() {
+    local eval_name="$1"
+    local raw_test_dir="$2"
+    local text_dir="examples/homograph_translation/experiments/$eval_name"
+    local dest_dir="examples/homograph_translation/data-bin/$eval_name"
 
-cp "$TEXT/joint_tokenizer.model" "$TEXT/joint_tokenizer.vocab" "$TEXT/joint_tokenizer.dict" "$HOMO_DEST/"
-cp "$TEXT/joint_tokenizer.dict" "$HOMO_DEST/dict.${src}.txt"
-cp "$TEXT/joint_tokenizer.dict" "$HOMO_DEST/dict.${tgt}.txt"
+    rm -rf "$text_dir" "$dest_dir"
+    mkdir -p "$text_dir" "$dest_dir"
 
-mkdir -p "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}"
+    encode_test_pair "$raw_test_dir" "$text_dir"
+
+    fairseq-preprocess --source-lang "$src" --target-lang "$tgt" \
+        --testpref "$text_dir/test" \
+        --destdir "$dest_dir" \
+        --workers 8 \
+        --joined-dictionary \
+        --srcdict "$TEXT/joint_tokenizer.dict"
+
+    cp "$TEXT/joint_tokenizer.model" "$TEXT/joint_tokenizer.vocab" "$TEXT/joint_tokenizer.dict" "$dest_dir/"
+    cp "$TEXT/joint_tokenizer.dict" "$dest_dir/dict.${src}.txt"
+    cp "$TEXT/joint_tokenizer.dict" "$dest_dir/dict.${tgt}.txt"
+}
+
+prepare_test_only_eval_bin "$HOMOGRAPH_EVAL_NAME" "examples/homograph_translation/${HOMOGRAPH_DATASET_DIR}"
+prepare_test_only_eval_bin "$FLORES_EVAL_NAME" "examples/homograph_translation/${FLORES_DATASET_DIR}"
+prepare_test_only_eval_bin "$FLORES_HOMOGRAPH_EVAL_NAME" "examples/homograph_translation/${FLORES_HOMOGRAPH_DATASET_DIR}"
+
+mkdir -p "$OUTPUT_DIR"
 
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-bin/$EXPERIMENT_NAME" \
     --arch transformer_iwslt_de_en \
@@ -198,7 +299,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-
     --best-checkpoint-metric bleu \
     --maximize-best-checkpoint-metric \
     --patience 8 \
-    --save-dir "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}" \
+    --save-dir "$OUTPUT_DIR" \
     --source-lang="$src" \
     --target-lang="$tgt" \
     --seed "$SEED" \
@@ -207,12 +308,12 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-
     --tgt-dropout "$TGT_DROPOUT" \
     --jamo-type "$JAMO_TYPE" \
     --bpe-impl-path "$(pwd)/examples/homograph_translation" \
-    --raw-data-path "$(pwd)/examples/homograph_translation/orig/${JAMO_TYPE}" \
+    --raw-data-path "$(pwd)/examples/homograph_translation/${MAIN_DATASET_DIR}" \
     --no-epoch-checkpoints \
-    > "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/${EXPERIMENT_NAME}.log"
+    > "${OUTPUT_DIR}/${EXPERIMENT_NAME}.log"
 
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$EXPERIMENT_NAME" \
-    --path "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt" \
+    --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
     --beam 5 \
     --max-len-a 1.2 \
@@ -220,10 +321,10 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
     --remove-bpe="${POST_PROCESS}" \
     --source-lang="$src" \
     --target-lang="$tgt" \
-    > "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_unprocessed.log"
+    > "${OUTPUT_DIR}/bleu_unprocessed.log"
 
-CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$HOMOGRAPH_ONLY_EXP" \
-    --path "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/checkpoint_best.pt" \
+CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$HOMOGRAPH_EVAL_NAME" \
+    --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
     --beam 5 \
     --max-len-a 1.2 \
@@ -231,9 +332,31 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
     --remove-bpe="${POST_PROCESS}" \
     --source-lang="$src" \
     --target-lang="$tgt" \
-    > "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}/bleu_homograph_only_unprocessed.log"
+    > "${OUTPUT_DIR}/bleu_homograph_unprocessed.log"
 
-cd "${src}_${tgt}_sentencepiece_experiment_outputs/${EXPERIMENT_NAME}"
+CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$FLORES_EVAL_NAME" \
+    --path "${OUTPUT_DIR}/checkpoint_best.pt" \
+    --batch-size 128 \
+    --beam 5 \
+    --max-len-a 1.2 \
+    --max-len-b 10 \
+    --remove-bpe="${POST_PROCESS}" \
+    --source-lang="$src" \
+    --target-lang="$tgt" \
+    > "${OUTPUT_DIR}/bleu_flores_unprocessed.log"
+
+CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$FLORES_HOMOGRAPH_EVAL_NAME" \
+    --path "${OUTPUT_DIR}/checkpoint_best.pt" \
+    --batch-size 128 \
+    --beam 5 \
+    --max-len-a 1.2 \
+    --max-len-b 10 \
+    --remove-bpe="${POST_PROCESS}" \
+    --source-lang="$src" \
+    --target-lang="$tgt" \
+    > "${OUTPUT_DIR}/bleu_flores_homograph_unprocessed.log"
+
+cd "$OUTPUT_DIR"
 
 grep --text ^H bleu_unprocessed.log | cut -f3- > gen.out.sys
 grep --text ^T bleu_unprocessed.log | cut -f2- > gen.out.ref
@@ -242,9 +365,23 @@ cat gen.out.ref | sacremoses -l de detokenize > gen.out.ref.detok
 sacrebleu gen.out.ref.detok -i gen.out.sys.detok -m bleu -b -w 4 > BLEU.txt
 sacrebleu gen.out.ref.detok -i gen.out.sys.detok -m chrf -b > CHRF.txt
 
-grep --text ^H bleu_homograph_only_unprocessed.log | cut -f3- > gen.out.homograph_only.sys
-grep --text ^T bleu_homograph_only_unprocessed.log | cut -f2- > gen.out.homograph_only.ref
-cat gen.out.homograph_only.sys | sacremoses -l de detokenize > gen.out.homograph_only.sys.detok
-cat gen.out.homograph_only.ref | sacremoses -l de detokenize > gen.out.homograph_only.ref.detok
-sacrebleu gen.out.homograph_only.ref.detok -i gen.out.homograph_only.sys.detok -m bleu -b -w 4 > BLEU_homograph_only.txt
-sacrebleu gen.out.homograph_only.ref.detok -i gen.out.homograph_only.sys.detok -m chrf -b > CHRF_homograph_only.txt
+grep --text ^H bleu_homograph_unprocessed.log | cut -f3- > gen.out.homograph.sys
+grep --text ^T bleu_homograph_unprocessed.log | cut -f2- > gen.out.homograph.ref
+cat gen.out.homograph.sys | sacremoses -l de detokenize > gen.out.homograph.sys.detok
+cat gen.out.homograph.ref | sacremoses -l de detokenize > gen.out.homograph.ref.detok
+sacrebleu gen.out.homograph.ref.detok -i gen.out.homograph.sys.detok -m bleu -b -w 4 > BLEU_homograph.txt
+sacrebleu gen.out.homograph.ref.detok -i gen.out.homograph.sys.detok -m chrf -b > CHRF_homograph.txt
+
+grep --text ^H bleu_flores_unprocessed.log | cut -f3- > gen.out.flores.sys
+grep --text ^T bleu_flores_unprocessed.log | cut -f2- > gen.out.flores.ref
+cat gen.out.flores.sys | sacremoses -l de detokenize > gen.out.flores.sys.detok
+cat gen.out.flores.ref | sacremoses -l de detokenize > gen.out.flores.ref.detok
+sacrebleu gen.out.flores.ref.detok -i gen.out.flores.sys.detok -m bleu -b -w 4 > BLEU_flores.txt
+sacrebleu gen.out.flores.ref.detok -i gen.out.flores.sys.detok -m chrf -b > CHRF_flores.txt
+
+grep --text ^H bleu_flores_homograph_unprocessed.log | cut -f3- > gen.out.flores.homograph.sys
+grep --text ^T bleu_flores_homograph_unprocessed.log | cut -f2- > gen.out.flores.homograph.ref
+cat gen.out.flores.homograph.sys | sacremoses -l de detokenize > gen.out.flores.homograph.sys.detok
+cat gen.out.flores.homograph.ref | sacremoses -l de detokenize > gen.out.flores.homograph.ref.detok
+sacrebleu gen.out.flores.homograph.ref.detok -i gen.out.flores.homograph.sys.detok -m bleu -b -w 4 > BLEU_flores_homograph.txt
+sacrebleu gen.out.flores.homograph.ref.detok -i gen.out.flores.homograph.sys.detok -m chrf -b > CHRF_flores_homograph.txt
