@@ -403,8 +403,10 @@ def create_mt_cue_data(lang1, lang2, input_dir, output_dir, stats_path, min_coun
     )
 
     language_maps = get_language_map()
-    lang1_map = language_maps[lang1]
-    lang2_map = language_maps[lang2]
+    map_lang1 = normalize_dictionary_language_code(lang1)
+    map_lang2 = normalize_dictionary_language_code(lang2)
+    lang1_map = language_maps[map_lang1]
+    lang2_map = language_maps[map_lang2]
 
     reset_output_dir(output_dir)
 
@@ -466,8 +468,10 @@ def create_test_only_cue_data(lang1, lang2, input_dir, output_dir, stats_path, r
     )
 
     language_maps = get_language_map()
-    lang1_map = language_maps[lang1]
-    lang2_map = language_maps[lang2]
+    map_lang1 = normalize_dictionary_language_code(lang1)
+    map_lang2 = normalize_dictionary_language_code(lang2)
+    lang1_map = language_maps[map_lang1]
+    lang2_map = language_maps[map_lang2]
 
     reset_output_dir(output_dir)
 
