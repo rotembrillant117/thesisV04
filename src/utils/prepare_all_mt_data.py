@@ -274,9 +274,18 @@ def create_test_only_lowercase_data(lang1, lang2, input_dir, output_dir, stats_p
     )
 
 
+def normalize_dictionary_language_code(lang):
+    if lang == "sv":
+        return "se"
+    return lang
+
+
 def build_initial_homograph_set(lang1, lang2):
-    lang1_dict = {w.lower() for w in get_language_dictionary(lang1)}
-    lang2_dict = {w.lower() for w in get_language_dictionary(lang2)}
+    dict_lang1 = normalize_dictionary_language_code(lang1)
+    dict_lang2 = normalize_dictionary_language_code(lang2)
+
+    lang1_dict = {w.lower() for w in get_language_dictionary(dict_lang1)}
+    lang2_dict = {w.lower() for w in get_language_dictionary(dict_lang2)}
     return {w for w in (lang1_dict & lang2_dict) if len(w) > 2}
 
 
@@ -332,7 +341,7 @@ def process_cued_line(line, homograph_set, language_map, type_counter, total_cou
         if token in homograph_set:
             parts[i] = mark_token(token, language_map)
             type_counter[token] += 1
-            total_counter["total_homographs_marked"] += 1
+            total_counter["total_marked_tokens"] += 1
 
     return "".join(parts)
 
@@ -370,12 +379,12 @@ def write_cued_stats(
         f"{lang2}_train_homograph_counts": dict(lang2_train_counter),
         lang1: {
             "num_unique_marked_words_in_corpus": len(lang1_counter),
-            "total_homographs_marked": lang1_total["total_homographs_marked"],
+            "total_homographs_marked": lang1_total["total_marked_tokens"],
             "marked_word_counts": dict(lang1_counter),
         },
         lang2: {
             "num_unique_marked_words_in_corpus": len(lang2_counter),
-            "total_homographs_marked": lang2_total["total_homographs_marked"],
+            "total_homographs_marked": lang2_total["total_marked_tokens"],
             "marked_word_counts": dict(lang2_counter),
         },
     }
@@ -441,9 +450,9 @@ def create_mt_cue_data(lang1, lang2, input_dir, output_dir, stats_path, min_coun
     print(f"Initial homograph words (len > 2): {len(initial_homograph_set)}")
     print(f"Final homograph words after thresholding: {len(homograph_set)}")
     print(f"{lang1} unique marked words in corpus: {len(lang1_counter)}")
-    print(f"{lang1} total homographs marked in corpus: {lang1_total['total_homographs_marked']}")
+    print(f"{lang1} total marked tokens in corpus: {lang1_total['total_marked_tokens']}")
     print(f"{lang2} unique marked words in corpus: {len(lang2_counter)}")
-    print(f"{lang2} total homographs marked in corpus: {lang2_total['total_homographs_marked']}")
+    print(f"{lang2} total marked tokens in corpus: {lang2_total['total_marked_tokens']}")
 
 
 def create_test_only_cue_data(lang1, lang2, input_dir, output_dir, stats_path, reference_input_dir, min_count=5):
