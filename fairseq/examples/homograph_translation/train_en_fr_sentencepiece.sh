@@ -326,6 +326,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$EXPERIMENT_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
@@ -337,6 +338,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$HOMOGRAPH_EVAL_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
@@ -348,6 +350,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$FLORES_EVAL_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
@@ -359,6 +362,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$FLORES_HOMOGRAPH_EVAL_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \

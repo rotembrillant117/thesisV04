@@ -52,28 +52,28 @@ echo -e "JAMO_TYPE $JAMO_TYPE \nSRC_TOKENS $SRC_BPE_TOKENS \nTGT_TOKENS $TGT_BPE
 echo "========= PARAMETERS =========== "
 
 src=en
-tgt=es
-lang=en-es
+tgt=sv
+lang=en-sv
 # jamo type is either baseline or cues. this is an if statement that defines which datasets are used, depending on if it is a cued or baseline model
 # and also which post_processing is used data_utils.py
 case "$JAMO_TYPE" in
-    en_es_baseline)
-        MAIN_DATASET_DIR="orig/en_es_baseline"
-        HOMOGRAPH_DATASET_DIR="orig/en_es_baseline_homograph"
-        FLORES_DATASET_DIR="orig/en_es_flores"
-        FLORES_HOMOGRAPH_DATASET_DIR="orig/en_es_flores_homograph"
+    en_sv_baseline)
+        MAIN_DATASET_DIR="orig/en_sv_baseline"
+        HOMOGRAPH_DATASET_DIR="orig/en_sv_baseline_homograph"
+        FLORES_DATASET_DIR="orig/en_sv_flores"
+        FLORES_HOMOGRAPH_DATASET_DIR="orig/en_sv_flores_homograph"
         POST_PROCESS="sentencepiece"
         ;;
-    en_es_cue)
-        MAIN_DATASET_DIR="orig/en_es_cue"
-        HOMOGRAPH_DATASET_DIR="orig/en_es_cue_homograph"
-        FLORES_DATASET_DIR="orig/en_es_flores_cue"
-        FLORES_HOMOGRAPH_DATASET_DIR="orig/en_es_flores_cue_homograph"
+    en_sv_cue)
+        MAIN_DATASET_DIR="orig/en_sv_cue"
+        HOMOGRAPH_DATASET_DIR="orig/en_sv_cue_homograph"
+        FLORES_DATASET_DIR="orig/en_sv_flores_cue"
+        FLORES_HOMOGRAPH_DATASET_DIR="orig/en_sv_flores_cue_homograph"
         POST_PROCESS="sentencepiece_cues"
         ;;
     *)
         echo "Unsupported --jamo-type: $JAMO_TYPE"
-        echo "Expected one of: en_es_baseline, en_es_cue"
+        echo "Expected one of: en_sv_baseline, en_sv_cue"
         exit 1
         ;;
 esac
@@ -304,7 +304,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-
     --eval-bleu \
     --eval-bleu-args '{"beam": 5, "max_len_a": 1.2, "max_len_b": 10}' \
     --eval-bleu-detok moses \
-    --eval-bleu-detok-args '{"target_lang": "es"}' \
+    --eval-bleu-detok-args '{"target_lang": "sv"}' \
     --eval-bleu-remove-bpe="${POST_PROCESS}" \
     --eval-bleu-print-samples \
     --best-checkpoint-metric bleu \
@@ -375,28 +375,28 @@ cd "$OUTPUT_DIR"
 
 grep --text ^H bleu_unprocessed.log | cut -f3- > gen.out.sys
 grep --text ^T bleu_unprocessed.log | cut -f2- > gen.out.ref
-cat gen.out.sys | sacremoses -l es detokenize > gen.out.sys.detok
-cat gen.out.ref | sacremoses -l es detokenize > gen.out.ref.detok
+cat gen.out.sys | sacremoses -l sv detokenize > gen.out.sys.detok
+cat gen.out.ref | sacremoses -l sv detokenize > gen.out.ref.detok
 sacrebleu gen.out.ref.detok -i gen.out.sys.detok -m bleu -b -w 4 > BLEU.txt
 sacrebleu gen.out.ref.detok -i gen.out.sys.detok -m chrf -b > CHRF.txt
 
 grep --text ^H bleu_homograph_unprocessed.log | cut -f3- > gen.out.homograph.sys
 grep --text ^T bleu_homograph_unprocessed.log | cut -f2- > gen.out.homograph.ref
-cat gen.out.homograph.sys | sacremoses -l es detokenize > gen.out.homograph.sys.detok
-cat gen.out.homograph.ref | sacremoses -l es detokenize > gen.out.homograph.ref.detok
+cat gen.out.homograph.sys | sacremoses -l sv detokenize > gen.out.homograph.sys.detok
+cat gen.out.homograph.ref | sacremoses -l sv detokenize > gen.out.homograph.ref.detok
 sacrebleu gen.out.homograph.ref.detok -i gen.out.homograph.sys.detok -m bleu -b -w 4 > BLEU_homograph.txt
 sacrebleu gen.out.homograph.ref.detok -i gen.out.homograph.sys.detok -m chrf -b > CHRF_homograph.txt
 
 grep --text ^H bleu_flores_unprocessed.log | cut -f3- > gen.out.flores.sys
 grep --text ^T bleu_flores_unprocessed.log | cut -f2- > gen.out.flores.ref
-cat gen.out.flores.sys | sacremoses -l es detokenize > gen.out.flores.sys.detok
-cat gen.out.flores.ref | sacremoses -l es detokenize > gen.out.flores.ref.detok
+cat gen.out.flores.sys | sacremoses -l sv detokenize > gen.out.flores.sys.detok
+cat gen.out.flores.ref | sacremoses -l sv detokenize > gen.out.flores.ref.detok
 sacrebleu gen.out.flores.ref.detok -i gen.out.flores.sys.detok -m bleu -b -w 4 > BLEU_flores.txt
 sacrebleu gen.out.flores.ref.detok -i gen.out.flores.sys.detok -m chrf -b > CHRF_flores.txt
 
 grep --text ^H bleu_flores_homograph_unprocessed.log | cut -f3- > gen.out.flores.homograph.sys
 grep --text ^T bleu_flores_homograph_unprocessed.log | cut -f2- > gen.out.flores.homograph.ref
-cat gen.out.flores.homograph.sys | sacremoses -l es detokenize > gen.out.flores.homograph.sys.detok
-cat gen.out.flores.homograph.ref | sacremoses -l es detokenize > gen.out.flores.homograph.ref.detok
+cat gen.out.flores.homograph.sys | sacremoses -l sv detokenize > gen.out.flores.homograph.sys.detok
+cat gen.out.flores.homograph.ref | sacremoses -l sv detokenize > gen.out.flores.homograph.ref.detok
 sacrebleu gen.out.flores.homograph.ref.detok -i gen.out.flores.homograph.sys.detok -m bleu -b -w 4 > BLEU_flores_homograph.txt
 sacrebleu gen.out.flores.homograph.ref.detok -i gen.out.flores.homograph.sys.detok -m chrf -b > CHRF_flores_homograph.txt
