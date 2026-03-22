@@ -332,7 +332,7 @@ def process_cued_line(line, homograph_set, language_map, type_counter, total_cou
         if token in homograph_set:
             parts[i] = mark_token(token, language_map)
             type_counter[token] += 1
-            total_counter["total_marked_tokens"] += 1
+            total_counter["total_homographs_marked"] += 1
 
     return "".join(parts)
 
@@ -370,12 +370,12 @@ def write_cued_stats(
         f"{lang2}_train_homograph_counts": dict(lang2_train_counter),
         lang1: {
             "num_unique_marked_words_in_corpus": len(lang1_counter),
-            "num_total_marked_tokens_in_corpus": lang1_total["total_marked_tokens"],
+            "total_homographs_marked": lang1_total["total_homographs_marked"],
             "marked_word_counts": dict(lang1_counter),
         },
         lang2: {
             "num_unique_marked_words_in_corpus": len(lang2_counter),
-            "num_total_marked_tokens_in_corpus": lang2_total["total_marked_tokens"],
+            "total_homographs_marked": lang2_total["total_homographs_marked"],
             "marked_word_counts": dict(lang2_counter),
         },
     }
@@ -441,9 +441,9 @@ def create_mt_cue_data(lang1, lang2, input_dir, output_dir, stats_path, min_coun
     print(f"Initial homograph words (len > 2): {len(initial_homograph_set)}")
     print(f"Final homograph words after thresholding: {len(homograph_set)}")
     print(f"{lang1} unique marked words in corpus: {len(lang1_counter)}")
-    print(f"{lang1} total marked tokens in corpus: {lang1_total['total_marked_tokens']}")
+    print(f"{lang1} total homographs marked in corpus: {lang1_total['total_homographs_marked']}")
     print(f"{lang2} unique marked words in corpus: {len(lang2_counter)}")
-    print(f"{lang2} total marked tokens in corpus: {lang2_total['total_marked_tokens']}")
+    print(f"{lang2} total homographs marked in corpus: {lang2_total['total_homographs_marked']}")
 
 
 def create_test_only_cue_data(lang1, lang2, input_dir, output_dir, stats_path, reference_input_dir, min_count=5):

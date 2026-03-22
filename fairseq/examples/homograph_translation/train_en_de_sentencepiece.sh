@@ -3,6 +3,7 @@
 #
 # Adapted from https://github.com/facebookresearch/MIXER/blob/master/prepareData.sh
 
+# Stop the bash script from running if anything fails
 set -euo pipefail
 
 SCRIPTS=mosesdecoder/scripts
@@ -20,7 +21,7 @@ SEED=0
 DEVICE=0
 
 EXPERIMENT_PREFIX="experiment"
-
+# loops through the arguments and assign their values to bash parameters
 while [[ "$#" -gt 0 ]]
 do
     case $1 in
@@ -53,7 +54,8 @@ echo "========= PARAMETERS =========== "
 src=en
 tgt=de
 lang=en-de
-
+# jamo type is either baseline or cues. this is an if statement that defines which datasets are used, depending on if it is a cued or baseline model
+# and also which post_processing is used data_utils.py
 case "$JAMO_TYPE" in
     en_de_baseline)
         MAIN_DATASET_DIR="orig/en_de_baseline"
@@ -103,12 +105,13 @@ echo "FLORES_HOMOGRAPH_DATASET_DIR $FLORES_HOMOGRAPH_DATASET_DIR"
 echo "POST_PROCESS $POST_PROCESS"
 echo "EXPERIMENT_OUTPUT_DIR $EXPERIMENT_OUTPUT_DIR"
 
+# if the experiment has already been done before, skip it
 if [ -d "$EXPERIMENT_OUTPUT_DIR" ]
 then
     echo "${EXPERIMENT_NAME} already done, SKIPPING"
     exit 0
 fi
-
+# before any tokenizer or model training or binarization happens, this big if block makes sure that all the files are present
 if [[ ! -f "${MAIN_DATASET_DIR}/train.${src}" ]]; then
     echo "Missing main training source file: ${MAIN_DATASET_DIR}/train.${src}"
     exit 1
@@ -172,7 +175,7 @@ fi
 mkdir -p "$OUTPUT_ROOT"
 mkdir -p "$prep"
 mkdir -p "$MAIN_DEST_REL"
-
+# trains a sentencepiece tokenizer with the relevant training data
 python - <<PY
 import sentencepiece as spm
 spm.SentencePieceTrainer.Train(
@@ -182,9 +185,10 @@ spm.SentencePieceTrainer.Train(
     model_type="$TOKENIZER_TYPE",
 )
 PY
-
+# saves the sentencepiece model files
 python3 dump_unigram_vocab.py "$prep/joint_tokenizer.vocab" "$prep/joint_tokenizer.dict"
-
+# for train, validation and test data, we load the trained tokenizer and tokenize all the "raw" data files, once for the
+# source language (English), and once for the target language (German)
 for f in train valid test; do
     echo "encode (joint tokenizer) ($src) to ${f}.${src}..."
     python - <<PY
@@ -210,7 +214,9 @@ PY
 done
 
 cd ../..
-
+# Convert the tokenized main train/valid/test text for this experiment into a fairseq
+# data-bin dataset using the shared SentencePiece dictionary, then copy the tokenizer
+# and dictionary files into the dataset directory so fairseq training/evaluation can use them.
 TEXT="examples/homograph_translation/$prep"
 MAIN_DEST="examples/homograph_translation/$MAIN_DEST_REL"
 OUTPUT_DIR="${src}_${tgt}_sentencepiece_experiment_outputs/${TOKENIZER_TYPE}/${EXPERIMENT_NAME}"
@@ -225,6 +231,11 @@ fairseq-preprocess --source-lang "$src" --target-lang "$tgt" \
 cp "$TEXT/joint_tokenizer.model" "$TEXT/joint_tokenizer.vocab" "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/"
 cp "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/dict.${src}.txt"
 cp "$TEXT/joint_tokenizer.dict" "$MAIN_DEST/dict.${tgt}.txt"
+
+# Build the three evaluation-only fairseq datasets (OPUS homograph, FLORES full, FLORES homograph)
+# by encoding each test set with the experiment's trained joint SentencePiece tokenizer and then
+# preprocessing it with the same shared dictionary, so the trained model can be evaluated consistently
+# on all test conditions without retraining or creating new tokenizers.
 
 encode_test_pair() {
     local input_dir="$1"
@@ -315,6 +326,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-train "examples/homograph_translation/data-
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$EXPERIMENT_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
@@ -326,6 +338,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$HOMOGRAPH_EVAL_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
@@ -337,6 +350,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$FLORES_EVAL_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
@@ -348,6 +362,7 @@ CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/da
 CUDA_VISIBLE_DEVICES=$DEVICE fairseq-generate "examples/homograph_translation/data-bin/$FLORES_HOMOGRAPH_EVAL_NAME" \
     --path "${OUTPUT_DIR}/checkpoint_best.pt" \
     --batch-size 128 \
+    --required-batch-size-multiple 1 \
     --beam 5 \
     --max-len-a 1.2 \
     --max-len-b 10 \
