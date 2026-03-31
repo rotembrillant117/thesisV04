@@ -174,32 +174,6 @@ def get_target_language(lang_pair):
     return parts[1]
 
 
-def count_unk_tokens(text):
-    return text.count("<<unk>>")
-
-
-def choose_reference_text(baseline_target, cue_target):
-    baseline_unk_count = count_unk_tokens(baseline_target)
-    cue_unk_count = count_unk_tokens(cue_target)
-
-    if baseline_target == cue_target:
-        return baseline_target
-
-    if baseline_unk_count == 0 and cue_unk_count > 0:
-        return baseline_target
-
-    if cue_unk_count == 0 and baseline_unk_count > 0:
-        return cue_target
-
-    if baseline_unk_count < cue_unk_count:
-        return baseline_target
-
-    if cue_unk_count < baseline_unk_count:
-        return cue_target
-
-    return baseline_target
-
-
 def align_system_dicts(baseline_dict, cue_dict):
     baseline_ids = set(baseline_dict.keys())
     cue_ids = set(cue_dict.keys())
@@ -229,10 +203,7 @@ def align_system_dicts(baseline_dict, cue_dict):
             "Warning: baseline and cue targets do not match for some sentence ids. "
             f"First mismatched ids: {mismatched_targets[:10]} "
             f"(total {len(mismatched_targets)}). "
-            "Reference text will be chosen with the following rule: "
-            "if one side has <<unk>> and the other does not, use the other; "
-            "if both have <<unk>>, use the one with fewer <<unk>>; "
-            "otherwise use the baseline target."
+            "Each model will be evaluated against its own reference text."
         )
 
     return common_ids
@@ -258,7 +229,8 @@ def compute_bleu(hypotheses_detok, references_detok):
 
 
 def build_text_lists_from_ids(sent_ids, baseline_dict, cue_dict):
-    references = []
+    baseline_references = []
+    cue_references = []
     baseline_hypotheses = []
     cue_hypotheses = []
 
@@ -266,29 +238,34 @@ def build_text_lists_from_ids(sent_ids, baseline_dict, cue_dict):
         baseline_target, baseline_hypothesis = baseline_dict[sent_id]
         cue_target, cue_hypothesis = cue_dict[sent_id]
 
-        reference_text = choose_reference_text(baseline_target, cue_target)
-
-        references.append(reference_text)
+        baseline_references.append(baseline_target)
+        cue_references.append(cue_target)
         baseline_hypotheses.append(baseline_hypothesis)
-        cue_hypothheses = cue_hypothesis
-        cue_hypotheses.append(cue_hypothheses)
+        cue_hypotheses.append(cue_hypothesis)
 
-    return references, baseline_hypotheses, cue_hypotheses
+    return baseline_references, cue_references, baseline_hypotheses, cue_hypotheses
 
 
 def compute_observed_scores(common_ids, baseline_dict, cue_dict, target_lang):
-    references, baseline_hypotheses, cue_hypotheses = build_text_lists_from_ids(
+    baseline_references, cue_references, baseline_hypotheses, cue_hypotheses = build_text_lists_from_ids(
         common_ids,
         baseline_dict,
         cue_dict,
     )
 
-    references_detok = detokenize_lines(references, target_lang)
+    baseline_references_detok = detokenize_lines(baseline_references, target_lang)
+    cue_references_detok = detokenize_lines(cue_references, target_lang)
     baseline_hypotheses_detok = detokenize_lines(baseline_hypotheses, target_lang)
     cue_hypotheses_detok = detokenize_lines(cue_hypotheses, target_lang)
 
-    observed_baseline_bleu = compute_bleu(baseline_hypotheses_detok, references_detok)
-    observed_cue_bleu = compute_bleu(cue_hypotheses_detok, references_detok)
+    observed_baseline_bleu = compute_bleu(
+        baseline_hypotheses_detok,
+        baseline_references_detok,
+    )
+    observed_cue_bleu = compute_bleu(
+        cue_hypotheses_detok,
+        cue_references_detok,
+    )
     observed_diff = observed_cue_bleu - observed_baseline_bleu
 
     return {
@@ -327,18 +304,25 @@ def run_paired_bootstrap(common_ids, baseline_dict, cue_dict, target_lang, num_s
     for iteration in range(num_samples):
         sampled_ids = [rng.choice(common_ids) for _ in range(sample_size)]
 
-        references, baseline_hypotheses, cue_hypotheses = build_text_lists_from_ids(
+        baseline_references, cue_references, baseline_hypotheses, cue_hypotheses = build_text_lists_from_ids(
             sampled_ids,
             baseline_dict,
             cue_dict,
         )
 
-        references_detok = detokenize_lines(references, target_lang)
+        baseline_references_detok = detokenize_lines(baseline_references, target_lang)
+        cue_references_detok = detokenize_lines(cue_references, target_lang)
         baseline_hypotheses_detok = detokenize_lines(baseline_hypotheses, target_lang)
         cue_hypotheses_detok = detokenize_lines(cue_hypotheses, target_lang)
 
-        baseline_bleu = compute_bleu(baseline_hypotheses_detok, references_detok)
-        cue_bleu = compute_bleu(cue_hypotheses_detok, references_detok)
+        baseline_bleu = compute_bleu(
+            baseline_hypotheses_detok,
+            baseline_references_detok,
+        )
+        cue_bleu = compute_bleu(
+            cue_hypotheses_detok,
+            cue_references_detok,
+        )
         bleu_diff = cue_bleu - baseline_bleu
 
         results.append({
@@ -478,39 +462,38 @@ def run_bootstrap_experiment(
 
 
 if __name__ == "__main__":
-    if __name__ == "__main__":
-        lang_pairs = [
-            "en_de",
-            "en_es",
-            "en_fr",
-            "en_it",
-            "en_ro",
-            "en_sv",
-        ]
+    lang_pairs = [
+        "en_de",
+        "en_es",
+        "en_fr",
+        "en_it",
+        "en_ro",
+        "en_sv",
+    ]
 
-        datasets = [
-            "opus",
-            "opus_homograph",
-            "flores",
-            "flores_homograph",
-        ]
+    datasets = [
+        "opus",
+        "opus_homograph",
+        "flores",
+        "flores_homograph",
+    ]
 
-        tokenizer = "bpe"
-        num_samples = 1000
-        seed = 42
-        output_dir = "bootstrap_results"
+    tokenizer = "bpe"
+    num_samples = 1000
+    seed = 42
+    output_dir = "bootstrap_results"
 
-        for lang_pair in lang_pairs:
-            for dataset in datasets:
-                print(f"\nRunning bootstrap for {lang_pair} | {tokenizer} | {dataset}")
+    for lang_pair in lang_pairs:
+        for dataset in datasets:
+            print(f"\nRunning bootstrap for {lang_pair} | {tokenizer} | {dataset}")
 
-                result = run_bootstrap_experiment(
-                    lang_pair=lang_pair,
-                    tokenizer=tokenizer,
-                    dataset=dataset,
-                    num_samples=num_samples,
-                    seed=seed,
-                    output_dir=output_dir,
-                )
+            result = run_bootstrap_experiment(
+                lang_pair=lang_pair,
+                tokenizer=tokenizer,
+                dataset=dataset,
+                num_samples=num_samples,
+                seed=seed,
+                output_dir=output_dir,
+            )
 
-                print(json.dumps(result["summary"], indent=2, ensure_ascii=False))
+            print(json.dumps(result["summary"], indent=2, ensure_ascii=False))
