@@ -463,12 +463,12 @@ def run_bootstrap_experiment(
 
 if __name__ == "__main__":
     lang_pairs = [
+        "en_sv",
         "en_de",
         "en_es",
         "en_fr",
         "en_it",
         "en_ro",
-        "en_sv",
     ]
 
     datasets = [
@@ -481,7 +481,7 @@ if __name__ == "__main__":
     tokenizer = "bpe"
     num_samples = 1000
     seed = 42
-    output_dir = "bootstrap_results"
+    output_dir = "bootstrap_results2"
 
     for lang_pair in lang_pairs:
         for dataset in datasets:
