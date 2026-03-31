@@ -3,6 +3,7 @@ import json
 import random
 import statistics
 import sacrebleu
+from sacremoses import MosesDetokenizer
 
 DATASET_TO_LOGFILE = {
     "opus": "bleu_unprocessed.log",
@@ -87,7 +88,7 @@ def find_relevant_log_files(lang_pair, tokenizer, dataset, base_dir="/home/brill
 def parse_fairseq_log(log_path):
     result = {}
 
-    with open(log_path, "r", encoding="utf-8") as f:
+    with open(log_path, "r", encoding="utf-8", errors="replace") as f:
         for raw_line in f:
             line = raw_line.rstrip("\n")
 
@@ -117,11 +118,11 @@ def parse_fairseq_log(log_path):
                 _, hypothesis_text = result[sent_id]
                 result[sent_id] = (target_text, hypothesis_text)
 
-            elif line.startswith("D-"):
+            elif line.startswith("H-"):
                 parts = line.split("\t", 2)
                 if len(parts) != 3:
                     raise ValueError(
-                        f"Malformed D-line in {log_path}: {line}"
+                        f"Malformed H-line in {log_path}: {line}"
                     )
 
                 sent_id_str = parts[0][2:]
@@ -131,7 +132,7 @@ def parse_fairseq_log(log_path):
                     sent_id = int(sent_id_str)
                 except ValueError:
                     raise ValueError(
-                        f"Invalid sentence id in D-line in {log_path}: {line}"
+                        f"Invalid sentence id in H-line in {log_path}: {line}"
                     )
 
                 if sent_id not in result:
@@ -162,6 +163,15 @@ def parse_fairseq_log(log_path):
         )
 
     return dict(sorted(result.items()))
+
+
+def get_target_language(lang_pair):
+    parts = lang_pair.split("_")
+    if len(parts) != 2:
+        raise ValueError(
+            f"lang_pair must look like 'en_es' or 'en_de', got: {lang_pair}"
+        )
+    return parts[1]
 
 
 def count_unk_tokens(text):
@@ -228,11 +238,21 @@ def align_system_dicts(baseline_dict, cue_dict):
     return common_ids
 
 
-def compute_bleu(hypotheses, references):
+def detokenize_lines(lines, target_lang):
+    detok = MosesDetokenizer(lang=target_lang)
+    detok_lines = []
+
+    for line in lines:
+        tokens = line.split()
+        detok_lines.append(detok.detokenize(tokens))
+
+    return detok_lines
+
+
+def compute_bleu(hypotheses_detok, references_detok):
     bleu = sacrebleu.corpus_bleu(
-        hypotheses,
-        [references],
-        tokenize="none",
+        hypotheses_detok,
+        [references_detok],
     )
     return bleu.score
 
@@ -250,20 +270,25 @@ def build_text_lists_from_ids(sent_ids, baseline_dict, cue_dict):
 
         references.append(reference_text)
         baseline_hypotheses.append(baseline_hypothesis)
-        cue_hypotheses.append(cue_hypothesis)
+        cue_hypothheses = cue_hypothesis
+        cue_hypotheses.append(cue_hypothheses)
 
     return references, baseline_hypotheses, cue_hypotheses
 
 
-def compute_observed_scores(common_ids, baseline_dict, cue_dict):
+def compute_observed_scores(common_ids, baseline_dict, cue_dict, target_lang):
     references, baseline_hypotheses, cue_hypotheses = build_text_lists_from_ids(
         common_ids,
         baseline_dict,
         cue_dict,
     )
 
-    observed_baseline_bleu = compute_bleu(baseline_hypotheses, references)
-    observed_cue_bleu = compute_bleu(cue_hypotheses, references)
+    references_detok = detokenize_lines(references, target_lang)
+    baseline_hypotheses_detok = detokenize_lines(baseline_hypotheses, target_lang)
+    cue_hypotheses_detok = detokenize_lines(cue_hypotheses, target_lang)
+
+    observed_baseline_bleu = compute_bleu(baseline_hypotheses_detok, references_detok)
+    observed_cue_bleu = compute_bleu(cue_hypotheses_detok, references_detok)
     observed_diff = observed_cue_bleu - observed_baseline_bleu
 
     return {
@@ -294,7 +319,7 @@ def percentile(sorted_values, p):
     return lower_value + fraction * (upper_value - lower_value)
 
 
-def run_paired_bootstrap(common_ids, baseline_dict, cue_dict, num_samples=1000, seed=42):
+def run_paired_bootstrap(common_ids, baseline_dict, cue_dict, target_lang, num_samples=1000, seed=42):
     rng = random.Random(seed)
     results = []
     sample_size = len(common_ids)
@@ -308,8 +333,12 @@ def run_paired_bootstrap(common_ids, baseline_dict, cue_dict, num_samples=1000, 
             cue_dict,
         )
 
-        baseline_bleu = compute_bleu(baseline_hypotheses, references)
-        cue_bleu = compute_bleu(cue_hypotheses, references)
+        references_detok = detokenize_lines(references, target_lang)
+        baseline_hypotheses_detok = detokenize_lines(baseline_hypotheses, target_lang)
+        cue_hypotheses_detok = detokenize_lines(cue_hypotheses, target_lang)
+
+        baseline_bleu = compute_bleu(baseline_hypotheses_detok, references_detok)
+        cue_bleu = compute_bleu(cue_hypotheses_detok, references_detok)
         bleu_diff = cue_bleu - baseline_bleu
 
         results.append({
@@ -393,6 +422,8 @@ def run_bootstrap_experiment(
     output_dir="bootstrap_results",
     base_dir="/home/brillant/thesisV04/fairseq",
 ):
+    target_lang = get_target_language(lang_pair)
+
     baseline_log_path, cue_log_path = find_relevant_log_files(
         lang_pair=lang_pair,
         tokenizer=tokenizer,
@@ -405,12 +436,18 @@ def run_bootstrap_experiment(
 
     common_ids = align_system_dicts(baseline_dict, cue_dict)
 
-    observed_scores = compute_observed_scores(common_ids, baseline_dict, cue_dict)
+    observed_scores = compute_observed_scores(
+        common_ids,
+        baseline_dict,
+        cue_dict,
+        target_lang,
+    )
 
     bootstrap_results = run_paired_bootstrap(
-        common_ids=common_ids,
-        baseline_dict=baseline_dict,
-        cue_dict=cue_dict,
+        common_ids,
+        baseline_dict,
+        cue_dict,
+        target_lang,
         num_samples=num_samples,
         seed=seed,
     )
@@ -420,17 +457,18 @@ def run_bootstrap_experiment(
     summary["lang_pair"] = lang_pair
     summary["tokenizer"] = tokenizer
     summary["dataset"] = dataset
+    summary["target_lang"] = target_lang
     summary["num_sentences"] = len(common_ids)
     summary["baseline_log_path"] = baseline_log_path
     summary["cue_log_path"] = cue_log_path
     summary["seed"] = seed
 
     summary_json_path = save_results_to_json(
-        summary=summary,
-        output_dir=output_dir,
-        lang_pair=lang_pair,
-        tokenizer=tokenizer,
-        dataset=dataset,
+        summary,
+        output_dir,
+        lang_pair,
+        tokenizer,
+        dataset,
     )
 
     return {
