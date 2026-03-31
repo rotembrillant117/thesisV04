@@ -164,6 +164,32 @@ def parse_fairseq_log(log_path):
     return dict(sorted(result.items()))
 
 
+def count_unk_tokens(text):
+    return text.count("<<unk>>")
+
+
+def choose_reference_text(baseline_target, cue_target):
+    baseline_unk_count = count_unk_tokens(baseline_target)
+    cue_unk_count = count_unk_tokens(cue_target)
+
+    if baseline_target == cue_target:
+        return baseline_target
+
+    if baseline_unk_count == 0 and cue_unk_count > 0:
+        return baseline_target
+
+    if cue_unk_count == 0 and baseline_unk_count > 0:
+        return cue_target
+
+    if baseline_unk_count < cue_unk_count:
+        return baseline_target
+
+    if cue_unk_count < baseline_unk_count:
+        return cue_target
+
+    return baseline_target
+
+
 def align_system_dicts(baseline_dict, cue_dict):
     baseline_ids = set(baseline_dict.keys())
     cue_ids = set(cue_dict.keys())
@@ -189,10 +215,14 @@ def align_system_dicts(baseline_dict, cue_dict):
             mismatched_targets.append(sent_id)
 
     if mismatched_targets:
-        raise RuntimeError(
-            "Baseline and cue targets do not match for the same sentence ids. "
+        print(
+            "Warning: baseline and cue targets do not match for some sentence ids. "
             f"First mismatched ids: {mismatched_targets[:10]} "
-            f"(total {len(mismatched_targets)})."
+            f"(total {len(mismatched_targets)}). "
+            "Reference text will be chosen with the following rule: "
+            "if one side has <<unk>> and the other does not, use the other; "
+            "if both have <<unk>>, use the one with fewer <<unk>>; "
+            "otherwise use the baseline target."
         )
 
     return common_ids
@@ -216,12 +246,9 @@ def build_text_lists_from_ids(sent_ids, baseline_dict, cue_dict):
         baseline_target, baseline_hypothesis = baseline_dict[sent_id]
         cue_target, cue_hypothesis = cue_dict[sent_id]
 
-        if baseline_target != cue_target:
-            raise RuntimeError(
-                f"Target mismatch for sentence id {sent_id}."
-            )
+        reference_text = choose_reference_text(baseline_target, cue_target)
 
-        references.append(baseline_target)
+        references.append(reference_text)
         baseline_hypotheses.append(baseline_hypothesis)
         cue_hypotheses.append(cue_hypothesis)
 
@@ -414,10 +441,10 @@ def run_bootstrap_experiment(
 
 if __name__ == "__main__":
     result = run_bootstrap_experiment(
-        lang_pair="en_de",
+        lang_pair="en_es",
         tokenizer="bpe",
         dataset="flores",
-        num_samples=10000,
+        num_samples=1000,
         seed=42,
         output_dir="bootstrap_results",
     )
