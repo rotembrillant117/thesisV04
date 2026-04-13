@@ -1,8 +1,0 @@
-{
-      "language": "fr",
-      "training_data": "./data/raw/training_data/fr/fra_wikipedia_2021_300K-sentences.txt",
-      "training_data_cues": "./data/raw/training_data/fr/en_fr_cues.txt",
-      "words": "./data/raw/training_data/words/fr/fra_wikipedia_2021_300K-words.txt",
-      "ff": "./data/raw/ff_data/french_ff.csv",
-      "multilingual_training_data": "./data/raw/training_data/fr/en_fr.txt"
-    }
