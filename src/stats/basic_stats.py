@@ -229,27 +229,27 @@ def calc_renyi_efficiency(tokenizer, corpus_path, alpha=2.5):
     return h_alpha / h_max
 
 
-def plot_fertility(multi_dist, cued_dist, trial, save_dir):
+def plot_fertility(baseline_dist, cued_dist, trial, save_dir):
     """
-    Plots a grouped bar chart for Fertility (Subwords per Word) comparing Multi and Cued tokenizers.
+    Plots a grouped bar chart for Fertility (Subwords per Word) comparing Baseline and Cued tokenizers.
     """
     max_len = 7
     x = np.arange(1, max_len + 1)
 
-    # Scale Y axis to 10 thousands
-    multi_counts = [multi_dist.get(i, 0) / 10000.0 for i in x]
-    cued_counts = [cued_dist.get(i, 0) / 10000.0 for i in x]
+    # Scale Y axis to millions
+    baseline_counts = [baseline_dist.get(i, 0) / 1000000.0 for i in x]
+    cued_counts = [cued_dist.get(i, 0) / 1000000.0 for i in x]
 
     plt.figure(figsize=(12, 8))
     width = 0.35
 
-    plt.bar(x - width / 2, multi_counts, width, label='Multi (en_l2)', color='royalblue')
-    plt.bar(x + width / 2, cued_counts, width, label='Cued (en_l2)', color='darkorange')
+    plt.bar(x - width / 2, baseline_counts, width, label='Baseline', color='royalblue')
+    plt.bar(x + width / 2, cued_counts, width, label='Cued', color='darkorange')
 
     plt.xlabel("Subwords in Word", fontsize=15)
-    plt.ylabel("Words in Corpus (in 10,000s)", fontsize=15)
+    plt.ylabel("Words in Corpus (Millions)", fontsize=15)
 
-    title = f"Fertility Distribution (Multi vs Cued)\n{trial.l1}, {trial.l2} | Algo: {trial.get_algo_name()}"
+    title = f"Fertility Distribution (Baseline vs Cued)\n{trial.l1}, {trial.l2} | Algo: {trial.get_algo_name()}"
     plt.title(title, fontsize=18)
     plt.xticks(x, fontsize=12)
     plt.legend(fontsize=13)

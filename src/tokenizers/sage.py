@@ -125,7 +125,7 @@ class SageTokenizer(Tokenizer):
         # Build the SaGe vocabulary
         trainer = SaGeVocabBuilder(full_vocab_schedule=self.full_vocab_schedule,
                                    embeddings_schedule=self.embedding_schedule,
-                                   workers_number=4, max_len=max_len)
+                                   workers_number=6, max_len=max_len)
 
         # Use the preprocessed corpus instead
         trainer.build_vocab(experiment_name=self.tokenizer_name, corpus_filepath=preprocessed_corpus_path,

@@ -92,6 +92,8 @@ def load_trials(vocab_size):
     trials = dict()
     path = Path(TRIALS_DIR / f"{vocab_size}")
     for l2 in os.listdir(path):
+        if not (Path(path) / l2).is_dir():
+            continue
         trials[l2] = []
         for pickle_file in os.listdir(Path(path) / l2):
             trials[l2].append(Trial.load_trial(Path(path) / l2 / pickle_file))

@@ -14,6 +14,14 @@ DATASET_TO_LOGFILE = {
 
 
 def find_relevant_log_files(lang_pair, tokenizer, dataset, base_dir="/home/brillant/thesisV04/fairseq"):
+    """
+    This function finds relevant log files based on a language pair
+    :param lang_pair: the language pair
+    :param tokenizer: the tokenizer type (bpe or unigram)
+    :param dataset: the dataset name
+    :param base_dir: the base dir to find relevant log files
+    :return: paths to relevant log files
+    """
     if dataset not in DATASET_TO_LOGFILE:
         raise ValueError(
             f"Unknown dataset '{dataset}'. "
@@ -86,6 +94,11 @@ def find_relevant_log_files(lang_pair, tokenizer, dataset, base_dir="/home/brill
 
 
 def parse_fairseq_log(log_path):
+    """
+    This function parses a fairseq log file and creates a dictionary of {sentence index: (target sentence, model hypothesis)}
+    :param log_path: the log file path to parse
+    :return: dictionary of {sentence index: (target sentence, model hypothesis)}
+    """
     result = {}
 
     with open(log_path, "r", encoding="utf-8", errors="replace") as f:
@@ -166,6 +179,11 @@ def parse_fairseq_log(log_path):
 
 
 def get_target_language(lang_pair):
+    """
+    This function gets the target language for a given language pair
+    :param lang_pair: the language pair. For example en_de
+    :return: the language pair (for example de)
+    """
     parts = lang_pair.split("_")
     if len(parts) != 2:
         raise ValueError(
@@ -210,6 +228,12 @@ def align_system_dicts(baseline_dict, cue_dict):
 
 
 def detokenize_lines(lines, target_lang):
+    """
+    This function takes a list of lines and detokenizes them.
+    :param lines: the lines to detokenize
+    :param target_lang: detokenize by target language
+    :return: detokenized lines
+    """
     detok = MosesDetokenizer(lang=target_lang)
     detok_lines = []
 
@@ -221,6 +245,12 @@ def detokenize_lines(lines, target_lang):
 
 
 def compute_bleu(hypotheses_detok, references_detok):
+    """
+    This function computes the BLEU score.
+    :param hypotheses_detok: the model hypotheses sentences
+    :param references_detok: the model references sentences
+    :return: bleu score
+    """
     bleu = sacrebleu.corpus_bleu(
         hypotheses_detok,
         [references_detok],
@@ -229,6 +259,13 @@ def compute_bleu(hypotheses_detok, references_detok):
 
 
 def build_text_lists_from_ids(sent_ids, baseline_dict, cue_dict):
+    """
+    This function builds lists of aligned reference and hypothesis sentences
+    :param sent_ids: the sentences ids
+    :param baseline_dict: the baseline dictionary
+    :param cue_dict: the cue dictionary
+    :return: aligned reference and hypothesis sentences for cue and baseline
+    """
     baseline_references = []
     cue_references = []
     baseline_hypotheses = []
@@ -247,6 +284,14 @@ def build_text_lists_from_ids(sent_ids, baseline_dict, cue_dict):
 
 
 def compute_observed_scores(common_ids, baseline_dict, cue_dict, target_lang):
+    """
+    This function computes the bleu score on the full test set
+    :param common_ids: the common sentences ids
+    :param baseline_dict: the baseline dictionary
+    :param cue_dict: the cue dictionary
+    :param target_lang: the target language
+    :return: bleu scores and their diff
+    """
     baseline_references, cue_references, baseline_hypotheses, cue_hypotheses = build_text_lists_from_ids(
         common_ids,
         baseline_dict,
@@ -297,6 +342,16 @@ def percentile(sorted_values, p):
 
 
 def run_paired_bootstrap(common_ids, baseline_dict, cue_dict, target_lang, num_samples=1000, seed=42):
+    """
+    This function runs paired bootstrapping.
+    :param common_ids: the ids we can sample from
+    :param baseline_dict: the baseline dictionary
+    :param cue_dict: the cue dictionary
+    :param target_lang: the target language
+    :param num_samples: number of bootstrap iterations
+    :param seed: seed for random number generator
+    :return: bootstrap results
+    """
     rng = random.Random(seed)
     results = []
     sample_size = len(common_ids)
