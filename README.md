@@ -1,4 +1,4 @@
-# ThesisV04
+# Tokenizing Crosslingual Homographs
 
 This repository contains the code used for a thesis on multilingual tokenization, language cues, false friends, and downstream evaluation in machine translation.
 
