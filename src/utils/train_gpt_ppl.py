@@ -15,7 +15,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 GPT_DATA_DIR = PROJECT_ROOT / "gpt_data"
 
-VOCAB_SIZE = 8001          # 0..7999 real SentencePiece ids, 8000 reserved as pad
+VOCAB_SIZE = 8001      # 0..7999 real sentencepiece ids, 8000 reserved for padding later
 PAD_ID = 8000
 BLOCK_SIZE = 128
 STRIDE = 64
@@ -111,8 +111,6 @@ def build_model():
 
 
 def compute_perplexity_strided(model, flat_eval_ids, device, max_length, stride):
-
-    # https://huggingface.co/docs/transformers/perplexity?utm_source=chatgpt.com
     model.eval()
 
     input_ids_all = torch.tensor(flat_eval_ids, dtype=torch.long, device=device).unsqueeze(0)
@@ -255,10 +253,15 @@ def main():
     with open(results_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
+    log_history_path = pair_dir / f"gpt_log_history_{args.condition}_{args.tokenizer_type}_8000.json"
+    with open(log_history_path, "w", encoding="utf-8") as f:
+        json.dump(trainer.state.log_history, f, ensure_ascii=False, indent=2)
+
     print(f"Trainer eval loss: {eval_results['eval_loss']:.6f}")
     print(f"Strided eval NLL: {avg_nll:.6f}")
     print(f"Perplexity: {ppl:.6f}")
     print(f"Saved results to: {results_path}")
+    print(f"Saved log history to: {log_history_path}")
 
 
 if __name__ == "__main__":
