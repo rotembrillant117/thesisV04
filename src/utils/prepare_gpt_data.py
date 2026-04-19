@@ -46,10 +46,22 @@ SEED = 42
 
 
 def lowercase_text(text):
+    """
+    Lowercase the text.
+    :param text: the text to lowercase
+    :return: lowercased text
+    """
     return text.lower().strip()
 
 
 def inject_cues_into_text(text, homographs, cue_map):
+    """
+    Inject cues into text.
+    :param text: the text to inject language cues
+    :param homographs: homographs set
+    :param cue_map: the cue map
+    :return: text with language cues
+    """
     parts = re.split(r'(\w+)', text)
 
     for i in range(len(parts)):
@@ -63,6 +75,13 @@ def inject_cues_into_text(text, homographs, cue_map):
 
 
 def split_pairs_without_sentence_overlap(pairs, eval_ratio=0.10, seed=42):
+    """
+    Splits the data to train and eval
+    :param pairs: list of parallel sentence pairs for example, (English, German)
+    :param eval_ratio: the eval set size
+    :param seed: random seed
+    :return:
+    """
     random.seed(seed)
     random.shuffle(pairs)
 
@@ -73,7 +92,7 @@ def split_pairs_without_sentence_overlap(pairs, eval_ratio=0.10, seed=42):
 
     train_en_sentences = set()
     train_l2_sentences = set()
-
+    # make sure that no eval sentences are in the training data
     for en_text, l2_text in pairs:
         can_go_to_eval = (
             len(eval_pairs) < target_eval_size
@@ -98,6 +117,12 @@ def save_lines(path, lines):
 
 
 def prepare_language_pair(hf_token, l2_hf):
+    """
+    Prepare language pair train and eval data
+    :param hf_token: the huggingface token to download dataset
+    :param l2_hf: the language pair
+    :return:
+    """
     l2_homograph = HF_TO_HOMOGRAPH_LANG[l2_hf]
     lang_pair = f"en_{l2_hf}"
     config_name = PAIR_TO_CONFIG[l2_hf]
@@ -196,6 +221,10 @@ def prepare_language_pair(hf_token, l2_hf):
 
 
 def parse_args():
+    """
+    Parses command line arguments. Important is the huggingface token to download huggingface dataset
+    :return: parsed arguments
+    """
     parser = argparse.ArgumentParser(description="Prepare GPT training/eval text corpora from OPUS-100.")
     parser.add_argument(
         "--hf_token",

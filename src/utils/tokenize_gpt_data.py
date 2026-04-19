@@ -24,11 +24,23 @@ GPT_TO_TOKENIZER_LANG = {
 
 
 def read_lines(path):
+    """
+    Reads raw lines from a file
+    :param path: file path
+    :return: raw lines
+    """
     with open(path, "r", encoding="utf-8") as f:
         return [line.rstrip("\n") for line in f]
 
 
 def get_tokenizer_model_path(l2_gpt, tokenizer_type, use_cues):
+    """
+    Gets the tokenizer model path
+    :param l2_gpt: the language pair (German, French etc...)
+    :param tokenizer_type: the tokenizer type (bpe or unigram)
+    :param use_cues: baseline or cued
+    :return:
+    """
     l2_tok = GPT_TO_TOKENIZER_LANG[l2_gpt]
 
     if use_cues:
@@ -46,12 +58,24 @@ def get_tokenizer_model_path(l2_gpt, tokenizer_type, use_cues):
 
 
 def tokenize_file(model_path, input_path):
+    """
+    Tokenize a file to token ids using specified model
+    :param model_path: the model path
+    :param input_path: the input path
+    :return: tokenized sentences (ids)
+    """
     lines = read_lines(input_path)
     sp = spm.SentencePieceProcessor(model_file=str(model_path))
     return sp.encode(lines, out_type=int)
 
 
 def save_tokenized_npy(path, tokenized_sentences):
+    """
+    Save tokenized sentences
+    :param path: path to save tokenized sentences
+    :param tokenized_sentences: the tokenized sentences
+    :return:
+    """
     arr = np.array(tokenized_sentences, dtype=object)
     np.save(path, arr, allow_pickle=True)
 

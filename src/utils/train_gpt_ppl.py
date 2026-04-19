@@ -34,6 +34,9 @@ SEED = 42
 
 
 class TokenBlockDataset(Dataset):
+    """
+    Dataset class that creates token blocks for GPT training and evaluation
+    """
     def __init__(self, blocks):
         self.blocks = blocks
 
@@ -49,6 +52,10 @@ class TokenBlockDataset(Dataset):
 
 
 def parse_args():
+    """
+    Parse command line arguments for gpt training
+    :return:
+    """
     parser = argparse.ArgumentParser(description="Train GPT and compute perplexity.")
     parser.add_argument("--lang_pair", required=True, help="Example: en_de")
     parser.add_argument("--tokenizer_type", required=True, choices=["BPE", "UNI"])
@@ -57,11 +64,21 @@ def parse_args():
 
 
 def load_token_sequences(path):
+    """
+    Loads the token sequences from a file path of type .npy
+    :param path: the file path
+    :return:
+    """
     arr = np.load(path, allow_pickle=True)
     return [list(seq) for seq in arr]
 
 
 def flatten_sequences(sequences):
+    """
+    Flatten the sequences into one list of token id stream
+    :param sequences: list of token sequences
+    :return: list of all token sequences
+    """
     flat = []
     for seq in sequences:
         flat.extend(int(x) for x in seq)
@@ -69,6 +86,12 @@ def flatten_sequences(sequences):
 
 
 def build_blocks(flat_ids, block_size):
+    """
+    Builds the blocks for gpt input
+    :param flat_ids: the token id stream
+    :param block_size: the length of the blocks
+    :return: list of block ids
+    """
     n_full_blocks = len(flat_ids) // block_size
     usable_len = n_full_blocks * block_size
     flat_ids = flat_ids[:usable_len]
@@ -81,6 +104,13 @@ def build_blocks(flat_ids, block_size):
 
 
 def get_npy_paths(lang_pair, tokenizer_type, condition):
+    """
+    Gets the file paths for train and eval data, for the specified language pair, tokenizer type and condition (baseline or cued)
+    :param lang_pair: the language pair
+    :param tokenizer_type: the tokenizer type
+    :param condition: baseline or cued
+    :return: file paths
+    """
     pair_dir = GPT_DATA_DIR / lang_pair
 
     if not pair_dir.exists():
@@ -99,6 +129,10 @@ def get_npy_paths(lang_pair, tokenizer_type, condition):
 
 
 def build_model():
+    """
+    Builds the GPT model
+    :return: gpt model
+    """
     config = GPT2Config(
         vocab_size=VOCAB_SIZE,
         n_positions=BLOCK_SIZE,
@@ -111,6 +145,16 @@ def build_model():
 
 
 def compute_perplexity_strided(model, flat_eval_ids, device, max_length, stride):
+    """
+    Computes the perplexity by sliding window, like advised at:
+    https://huggingface.co/docs/transformers/perplexity?utm_source=chatgpt.com
+    :param model: the model
+    :param flat_eval_ids: the token id stream of eval data
+    :param device: the device
+    :param max_length: the maximum length of the sequence
+    :param stride: the stride of the sliding window
+    :return:
+    """
     model.eval()
 
     input_ids_all = torch.tensor(flat_eval_ids, dtype=torch.long, device=device).unsqueeze(0)
