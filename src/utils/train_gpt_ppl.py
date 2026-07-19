@@ -128,6 +128,33 @@ def get_npy_paths(lang_pair, tokenizer_type, condition):
     return train_path, eval_path, pair_dir
 
 
+def count_text_bytes_and_words(path):
+    """
+    Counts UTF-8 bytes and words in the original evaluation text
+    :param path: the evaluation text file path
+    :return: number of bytes and words
+    """
+    if not path.exists():
+        raise ValueError(f"Missing evaluation text file: {path}")
+
+    num_bytes = 0
+    num_words = 0
+
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            text = line.rstrip("\r\n")
+            num_bytes += len(text.encode("utf-8"))
+            num_words += len(text.split())
+
+    if num_bytes == 0:
+        raise ValueError("The evaluation text contains zero bytes.")
+
+    if num_words == 0:
+        raise ValueError("The evaluation text contains zero words.")
+
+    return num_bytes, num_words
+
+
 def build_model():
     """
     Builds the GPT model
@@ -190,7 +217,7 @@ def compute_perplexity_strided(model, flat_eval_ids, device, max_length, stride)
     avg_nll = nll_sum / n_tokens
     ppl = torch.exp(avg_nll)
 
-    return avg_nll.item(), ppl.item()
+    return avg_nll.item(), ppl.item(), nll_sum.item()
 
 
 def main():
@@ -216,6 +243,9 @@ def main():
 
     if len(eval_blocks) == 0:
         raise ValueError("No eval blocks were created. The eval token stream is too short.")
+
+    eval_text_path = pair_dir / f"{args.condition}_eval.txt"
+    num_bytes, num_words = count_text_bytes_and_words(eval_text_path)
 
     train_dataset = TokenBlockDataset(train_blocks)
     eval_dataset = TokenBlockDataset(eval_blocks)
@@ -255,13 +285,16 @@ def main():
     eval_results = trainer.evaluate()
 
     device = model.device
-    avg_nll, ppl = compute_perplexity_strided(
+    avg_nll, ppl, total_nll = compute_perplexity_strided(
         model=model,
         flat_eval_ids=flat_eval_ids,
         device=device,
         max_length=BLOCK_SIZE,
         stride=STRIDE,
     )
+
+    bpb = total_nll / (math.log(2) * num_bytes)
+    word_ppl = math.exp(total_nll / num_words)
 
     results = {
         "lang_pair": args.lang_pair,
@@ -291,6 +324,11 @@ def main():
         "trainer_eval_loss": float(eval_results["eval_loss"]),
         "strided_eval_nll": avg_nll,
         "perplexity": ppl,
+        "total_nll": total_nll,
+        "num_bytes": num_bytes,
+        "num_words": num_words,
+        "bpb": bpb,
+        "word_ppl": word_ppl,
     }
 
     results_path = pair_dir / f"gpt_results_{args.condition}_{args.tokenizer_type}_8000.json"
@@ -304,6 +342,8 @@ def main():
     print(f"Trainer eval loss: {eval_results['eval_loss']:.6f}")
     print(f"Strided eval NLL: {avg_nll:.6f}")
     print(f"Perplexity: {ppl:.6f}")
+    print(f"Bits per byte: {bpb:.6f}")
+    print(f"Word-level perplexity: {word_ppl:.6f}")
     print(f"Saved results to: {results_path}")
     print(f"Saved log history to: {log_history_path}")
 
